@@ -1,0 +1,33 @@
+{
+  "name": "starlight-llms-txt-docs",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Generate llms.txt files to train large language models on your Starlight documentation website",
+  "author": "delucis",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.31.0",
+    "astro": "^5.1.6",
+    "sharp": "^0.33.5",
+    "starlight-llms-txt": "workspace:*",
+    "starlight-package-managers": "^0.9.0"
+  },
+  "engines": {
+    "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+  },
+  "private": true,
+  "homepage": "https://github.com/delucis/starlight-llms-txt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/delucis/starlight-llms-txt.git",
+    "directory": "docs"
+  },
+  "bugs": "https://github.com/delucis/starlight-llms-txt/issues"
+}

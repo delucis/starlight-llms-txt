@@ -1,0 +1,97 @@
+---
+title: starlight-llms-txt
+description: Generate llms.txt files to train large language models on your Starlight documentation website
+template: splash
+editUrl: false
+hero:
+  tagline: Generate llms.txt files to train large language models on your Starlight documentation website
+  image:
+    html: 🤖
+  actions:
+    - text: Get Started
+      link: /starlight-llms-txt/getting-started/
+      icon: right-arrow
+head:
+  - tag: title
+    content: starlight-llms-txt
+  - tag: style
+    content: >-
+      .hero-html {
+        --size: min(10rem, calc(5rem + 6vw));
+        --blur: calc(var(--size) / 5);
+        --x-shift: calc(var(--size) / 3);
+        --y-shift: calc(var(--size) / 5);
+        font-size: var(--size);
+        line-height: var(--size);
+        justify-content: center;
+        filter:
+          drop-shadow(0 0 var(--blur) var(--sl-color-orange))
+          drop-shadow(calc(-1 * var(--x-shift)) var(--y-shift) var(--blur) var(--sl-color-red))
+          drop-shadow(var(--x-shift) calc(-1 * var(--y-shift)) var(--blur) var(--sl-color-purple));
+        z-index: -1;
+      }
+      [data-has-hero] header {
+        border-color: transparent;
+        background-color: transparent;
+        backdrop-filter: blur(1rem);
+      }
+      .hero h1 { text-wrap: balance }
+      [role="tabpanel"] {
+        margin-top: 0 !important;
+      }
+      iframe {
+        border: 0px solid var(--sl-color-gray-5);
+        border-top: 0;
+        outline-offset: -2px;
+        width: 100%;
+        height: 24rem !important;
+      }
+      .demo {
+        padding: 1rem;
+        max-width: 50rem;
+        margin: 0 auto 8rem;
+        background-color: var(--sl-color-black);
+        filter:
+          drop-shadow(0 0 0.25rem var(--sl-color-orange-low))
+          drop-shadow(-0.5rem 0.5rem 1rem var(--sl-color-purple-low))
+          drop-shadow(0.5rem -0.5rem 1rem var(--sl-color-red-low));
+      }
+      @media (min-width: 30rem) {
+        .demo {
+          padding: 2.5rem;
+        }
+      }
+---
+
+import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+
+<div class="demo">
+
+## Demo
+
+`starlight-llms-txt` generates the following files for this site:
+
+    <Tabs>
+    	<TabItem label="llms.txt">
+    		<iframe src="/starlight-llms-txt/llms.txt" title="llms.txt file for this site"></iframe>
+    	</TabItem>
+    	<TabItem label="llms-full.txt">
+    		<iframe
+    			src="/starlight-llms-txt/llms-full.txt"
+    			title="llms-full.txt file for this site"
+    		></iframe>
+    	</TabItem>
+    </Tabs>
+
+</div>
+
+## Next steps
+
+<CardGrid stagger>
+	<Card title="Install the plugin" icon="puzzle">
+		Check the [getting started guide](/getting-started/) for installation instructions.
+	</Card>
+	<Card title="Configure the plugin" icon="setting">
+		Edit your config in the `astro.config.mjs` file.
+	</Card>
+</CardGrid>
