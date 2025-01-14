@@ -35,9 +35,16 @@ const htmlToMarkdownPipeline = unified()
 	.use(remarkStringify);
 
 /** Render a content collection entry to HTML and back to Markdown to support rendering and simplifying MDX components */
-export async function entryToSimpleMarkdown(entry: CollectionEntry<'docs'>, context: APIContext) {
+export async function entryToSimpleMarkdown(
+	entry: CollectionEntry<'docs'>,
+	context: APIContext,
+	minify: boolean = false
+) {
 	const { Content } = await render(entry);
 	const html = await astroContainer.renderToString(Content, context);
-	const file = await htmlToMarkdownPipeline.process(html);
+	const file = await htmlToMarkdownPipeline.process({
+		value: html,
+		data: { starlightLlmsTxt: { minify } },
+	});
 	return String(file);
 }

@@ -81,6 +81,12 @@ import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
     			title="llms-full.txt file for this site"
     		></iframe>
     	</TabItem>
+    	<TabItem label="llms-small.txt">
+    		<iframe
+    			src="/starlight-llms-txt/llms-small.txt"
+    			title="llms-small.txt file for this site"
+    		></iframe>
+    	</TabItem>
     </Tabs>
 
 </div>
@@ -89,7 +95,8 @@ import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
 
 <CardGrid stagger>
 	<Card title="Install the plugin" icon="puzzle">
-		Check the [getting started guide](/starlight-llms-txt/getting-started/) for installation instructions.
+		Check the [getting started guide](/starlight-llms-txt/getting-started/) for installation
+		instructions.
 	</Card>
 	<Card title="Configure the plugin" icon="setting">
 		Edit your config in the `astro.config.mjs` file.

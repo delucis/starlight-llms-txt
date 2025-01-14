@@ -25,6 +25,10 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								entrypoint: new URL('./llms-full.txt.ts', import.meta.url),
 								pattern: '/llms-full.txt',
 							});
+							injectRoute({
+								entrypoint: new URL('./llms-small.txt.ts', import.meta.url),
+								pattern: '/llms-small.txt',
+							});
 
 							const projectContext: ProjectContext = {
 								base: astroConfig.base,
