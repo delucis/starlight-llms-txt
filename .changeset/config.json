@@ -7,5 +7,5 @@
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
-	"ignore": ["starlight-llms-txt-monorepo", "starlight-llms-txt-docs"]
+	"ignore": ["starlight-llms-txt-docs"]
 }
