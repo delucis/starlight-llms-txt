@@ -21,7 +21,7 @@ import { PackageManagers } from 'starlight-package-managers';
 
    <PackageManagers pkg="starlight-llms-txt" />
 
-2. Configure the plugin in your Starlight [configuration](https://starlight.astro.build/reference/configuration/#plugins) in the `astro.config.mjs` file.
+2. Configure the plugin in your Starlight [configuration](https://starlight.astro.build/reference/configuration/#plugins) in the `astro.config.mjs` file. A `site` URL is also required if you haven’t already set this:
 
    ```diff lang="js"
    // astro.config.mjs
@@ -30,6 +30,7 @@ import { PackageManagers } from 'starlight-package-managers';
    +import starlightLlmsTxt from 'starlight-llms-txt'
 
    export default defineConfig({
+   +  site: 'https://example.com/',
      integrations: [
        starlight({
          title: 'My Docs',
