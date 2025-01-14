@@ -25,7 +25,6 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm i
-      - run: pnpm build
       - run: pnpm build:docs
       - uses: actions/upload-pages-artifact@v3
         with:
