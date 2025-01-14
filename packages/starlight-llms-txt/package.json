@@ -30,7 +30,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"homepage": "https://github.com/delucis/starlight-llms-txt",
+	"homepage": "https://delucis.github.io/starlight-llms-txt/",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/delucis/starlight-llms-txt.git",
