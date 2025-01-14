@@ -36,5 +36,10 @@
 		"url": "https://github.com/delucis/starlight-llms-txt.git",
 		"directory": "packages/starlight-llms-txt"
 	},
-	"bugs": "https://github.com/delucis/starlight-llms-txt/issues"
+	"bugs": "https://github.com/delucis/starlight-llms-txt/issues",
+	"keywords": [
+		"llms.txt",
+		"withastro",
+		"starlight"
+	]
 }
