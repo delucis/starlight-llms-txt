@@ -2,6 +2,7 @@ import mdxServer from '@astrojs/mdx/server.js';
 import type { APIContext } from 'astro';
 import { experimental_AstroContainer } from 'astro/container';
 import { render, type CollectionEntry } from 'astro:content';
+import { select, selectAll } from 'hast-util-select';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
@@ -14,6 +15,21 @@ const astroContainer = await experimental_AstroContainer.create({
 
 const htmlToMarkdownPipeline = unified()
 	.use(rehypeParse)
+	.use(function improveExpressiveCodeHandling() {
+		return (tree) => {
+			const ecInstances = selectAll('.expressive-code', tree as Parameters<typeof selectAll>[1]);
+			for (const instance of ecInstances) {
+				const pre = select('pre', instance);
+				const code = select('code', instance);
+				// Use Expressive Code’s `data-language=*` attribute to set a `language-*` class name.
+				// This is what `hast-util-to-mdast` checks for code language metadata.
+				if (pre?.properties.dataLanguage && code) {
+					if (!Array.isArray(code.properties.className)) code.properties.className = [];
+					code.properties.className.push(`language-${pre.properties.dataLanguage}`);
+				}
+			}
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);

@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^4.0.5",
+		"hast-util-select": "^6.0.3",
 		"rehype-parse": "^9.0.1",
 		"rehype-remark": "^10.0.0",
 		"remark-gfm": "^4.0.0",
