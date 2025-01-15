@@ -10,6 +10,7 @@ export interface ProjectContext {
 	description: StarlightUserConfig['description'];
 	details: StarlightLllmsTextOptions['details'];
 	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
+	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 }
 
 /** Plugin user options. */
@@ -93,4 +94,16 @@ export interface StarlightLllmsTextOptions {
 		 */
 		whitespace?: boolean;
 	};
+
+	/**
+	 * Slugs of pages to exclude from `llms-small.txt`. Supports glob patterns.
+	 *
+	 * @example
+	 * // Ignore an old page and all tutorial pages when creating llms-small.txt
+	 * exclude: [
+	 * 	"old-page",
+	 * 	"tutorial/**"
+	 * ],
+	 */
+	exclude?: string[];
 }

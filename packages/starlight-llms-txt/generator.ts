@@ -1,5 +1,7 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
+import micromatch from 'micromatch';
+import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { entryToSimpleMarkdown } from './entryToSimpleMarkdown';
 import { defaultLang, getSiteTitle, isDefaultLocale } from './utils';
 
@@ -16,11 +18,13 @@ export async function generateLlmsTxt(
 		minify: boolean;
 	}
 ): Promise<string> {
-	const docs = (await getCollection('docs', isDefaultLocale)).sort((a, b) => {
-		const aIsIndex = a.id === 'index';
-		const bIsIndex = b.id === 'index';
-		return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
-	});
+	const docs = (await getCollection('docs', isDefaultLocale))
+		.filter((doc) => !micromatch.isMatch(doc.id, starlightLllmsTxtContext.exclude))
+		.sort((a, b) => {
+			const aIsIndex = a.id === 'index';
+			const bIsIndex = b.id === 'index';
+			return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
+		});
 	const segments: string[] = [];
 	for (const doc of docs) {
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];

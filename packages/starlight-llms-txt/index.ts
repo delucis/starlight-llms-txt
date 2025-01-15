@@ -36,6 +36,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								description: opts.description ?? config.description,
 								details: opts.details,
 								minify: opts.minify ?? {},
+								exclude: opts.exclude ?? [],
 								defaultLocale: config.defaultLocale,
 								locales: config.locales,
 							};

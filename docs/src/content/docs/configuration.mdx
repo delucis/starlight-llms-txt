@@ -71,6 +71,23 @@ According to [llmstxt.org](https://llmstxt.org/) this should be:
 
 > Zero or more markdown sections (e.g. paragraphs, lists, etc) of any type except headings, containing more detailed information about the project and how to interpret the provided files
 
+### `exclude`
+
+**Type:** `string[]`  
+**Default:** `[]`
+
+Use the `exclude` option to specify docs pages that should be excluded when generating `llms-small.txt`.
+This allows you to filter out non-essential documentation for models with a smaller context window.
+
+The value of `exclude` is an array of page slugs or glob patterns that match page slugs.
+Glob patterns are processed using [`micromatch`’s matching features](https://github.com/micromatch/micromatch#matching-features).
+
+In the following example, a specific, outdated page is excluded as well as all pages in the `src/content/docs/tutorial/` directory:
+
+```ts
+exclude: ['old-page', 'tutorial/**'],
+```
+
 ### `minify`
 
 **Type:** `Record<'note' | 'tip' | 'caution' | 'danger' | 'details' | 'whitespace', boolean>`
