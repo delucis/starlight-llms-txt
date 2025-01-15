@@ -71,6 +71,16 @@ According to [llmstxt.org](https://llmstxt.org/) this should be:
 
 > Zero or more markdown sections (e.g. paragraphs, lists, etc) of any type except headings, containing more detailed information about the project and how to interpret the provided files
 
+### `optionalLinks`
+
+**Type:** `Array<{ label: string; url: string; description?: string }>`  
+**Default:** `[]`
+
+An array of optional links to add to the `llms.txt` entrypoint.
+
+URLs provided here can be skipped by the LLM if a shorter context is needed.
+Use it for secondary information which is not already in your docs content.
+
 ### `exclude`
 
 **Type:** `string[]`  

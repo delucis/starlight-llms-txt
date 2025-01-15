@@ -31,5 +31,18 @@ export const GET: APIRoute = async (context) => {
 	segments.push(`- The complete documentation includes all content from the official documentation
 - The content is automatically generated from the same source as the official documentation`);
 
+	// Optional links.
+	if (starlightLllmsTxtContext.optionalLinks.length > 0) {
+		segments.push('## Optional');
+		segments.push(
+			starlightLllmsTxtContext.optionalLinks
+				.map(
+					(link) =>
+						`- [${link.label}](${link.url})${link.description ? `: ${link.description}` : ''}`
+				)
+				.join('\n')
+		);
+	}
+
 	return new Response(segments.join('\n\n') + '\n');
 };

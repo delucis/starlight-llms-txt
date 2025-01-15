@@ -35,6 +35,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								title: opts.projectName ?? config.title,
 								description: opts.description ?? config.description,
 								details: opts.details,
+								optionalLinks: opts.optionalLinks ?? [],
 								minify: opts.minify ?? {},
 								exclude: opts.exclude ?? [],
 								defaultLocale: config.defaultLocale,

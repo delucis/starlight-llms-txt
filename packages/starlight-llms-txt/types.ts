@@ -9,6 +9,7 @@ export interface ProjectContext {
 	title: StarlightUserConfig['title'];
 	description: StarlightUserConfig['description'];
 	details: StarlightLllmsTextOptions['details'];
+	optionalLinks: NonNullable<StarlightLllmsTextOptions['optionalLinks']>;
 	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 }
@@ -60,6 +61,18 @@ export interface StarlightLllmsTextOptions {
 	 * ```
 	 */
 	details?: string;
+
+	/**
+	 * An array of optional links to add to the `llms.txt` entrypoint.
+	 *
+	 * URLs provided here can be skipped by the LLM if a shorter context is needed.
+	 * Use it for secondary information which is not already in your docs content.
+	 */
+	optionalLinks?: Array<{
+		label: string;
+		url: string;
+		description?: string;
+	}>;
 
 	/** Control what elements are removed in `llms-small.txt`. */
 	minify?: {

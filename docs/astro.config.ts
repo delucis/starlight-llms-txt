@@ -20,6 +20,13 @@ export default defineConfig({
 				starlightLlmsTxt({
 					description:
 						'starlight-llms-txt is a plugin for the Starlight documentation website framework that auto-generates llms.txt context files for large language models based on a documentation site’s content.',
+					optionalLinks: [
+						{
+							label: 'The /llms.txt file',
+							url: 'https://llmstxt.org/',
+							description: 'full context about how to use llms.txt files',
+						},
+					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
 				}),
