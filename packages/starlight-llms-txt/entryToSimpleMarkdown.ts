@@ -3,7 +3,6 @@ import type { APIContext } from 'astro';
 import { experimental_AstroContainer } from 'astro/container';
 import { render, type CollectionEntry } from 'astro:content';
 import type { RootContent } from 'hast';
-import { isElement } from 'hast-util-is-element';
 import { matches, select, selectAll } from 'hast-util-select';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
@@ -25,6 +24,9 @@ const minifyDefaults = {
 };
 /** Resolved minification options */
 const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
+/** Selectors for elements to remove during minification. */
+const selectors = [...minify.customSelectors];
+if (minify.details) selectors.unshift('details');
 
 const astroContainer = await experimental_AstroContainer.create({
 	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
@@ -39,13 +41,9 @@ const htmlToMarkdownPipeline = unified()
 			}
 			remove(tree, (_node) => {
 				const node = _node as RootContent;
-				// Remove <details> elements:
-				if (minify.details && isElement(node, 'details')) {
-					return true;
-				}
 
-				// Remove elements matching a user’s custom selectors:
-				for (const selector of minify.customSelectors) {
+				// Remove elements matching any selectors to be minified:
+				for (const selector of selectors) {
 					if (matches(selector, node)) {
 						return true;
 					}

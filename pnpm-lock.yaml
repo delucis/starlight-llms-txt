@@ -44,9 +44,6 @@ importers:
       '@types/micromatch':
         specifier: ^4.0.9
         version: 4.0.9
-      hast-util-is-element:
-        specifier: ^3.0.0
-        version: 3.0.0
       hast-util-select:
         specifier: ^6.0.3
         version: 6.0.3
