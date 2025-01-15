@@ -73,9 +73,9 @@ According to [llmstxt.org](https://llmstxt.org/) this should be:
 
 ### `minify`
 
-**Type:** `Record<'note' | 'tip' | 'caution' | 'danger' | 'details', boolean>`
+**Type:** `Record<'note' | 'tip' | 'caution' | 'danger' | 'details' | 'whitespace', boolean>`
 
-A map of element types to filter out of docs when creating `llms-small.txt` for small context windows.
+A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.
 Set an element to `true` to filter it out or to `false` to keep it.
 
 By default, the following minify values are used:
@@ -89,5 +89,7 @@ minify: {
 	danger: false,
 	// HTML elements
 	details: true,
+	// Whether whitespace should be collapsed
+	whitespace: true,
 },
 ```

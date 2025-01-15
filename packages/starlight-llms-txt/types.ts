@@ -87,5 +87,10 @@ export interface StarlightLllmsTextOptions {
 		 * @default true
 		 */
 		details?: boolean;
+		/**
+		 * Collapse whitespace in `llms-small.txt`.
+		 * @default true
+		 */
+		whitespace?: boolean;
 	};
 }

@@ -13,7 +13,14 @@ import { remove } from 'unist-util-remove';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 
 /** Minification defaults */
-const minifyDefaults = { note: true, tip: true, caution: false, danger: false, details: true };
+const minifyDefaults = {
+	note: true,
+	tip: true,
+	caution: false,
+	danger: false,
+	details: true,
+	whitespace: true,
+};
 /** Resolved minification options */
 const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
 
@@ -71,13 +78,17 @@ const htmlToMarkdownPipeline = unified()
 export async function entryToSimpleMarkdown(
 	entry: CollectionEntry<'docs'>,
 	context: APIContext,
-	minify: boolean = false
+	shouldMinify: boolean = false
 ) {
 	const { Content } = await render(entry);
 	const html = await astroContainer.renderToString(Content, context);
 	const file = await htmlToMarkdownPipeline.process({
 		value: html,
-		data: { starlightLlmsTxt: { minify } },
+		data: { starlightLlmsTxt: { minify: shouldMinify } },
 	});
-	return String(file);
+	let markdown = String(file).trim();
+	if (shouldMinify && minify.whitespace) {
+		markdown = markdown.replace(/\s+/g, ' ');
+	}
+	return markdown;
 }
