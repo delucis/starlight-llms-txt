@@ -70,3 +70,24 @@ Provide addition details to add after the `description` in `llms.txt`.
 According to [llmstxt.org](https://llmstxt.org/) this should be:
 
 > Zero or more markdown sections (e.g. paragraphs, lists, etc) of any type except headings, containing more detailed information about the project and how to interpret the provided files
+
+### `minify`
+
+**Type:** `Record<'note' | 'tip' | 'caution' | 'danger' | 'details', boolean>`
+
+A map of element types to filter out of docs when creating `llms-small.txt` for small context windows.
+Set an element to `true` to filter it out or to `false` to keep it.
+
+By default, the following minify values are used:
+
+```ts
+minify: {
+	// Starlight aside variants
+	note: true,
+	tip: true,
+	caution: false,
+	danger: false,
+	// HTML elements
+	details: true,
+},
+```

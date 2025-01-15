@@ -2,19 +2,52 @@ import mdxServer from '@astrojs/mdx/server.js';
 import type { APIContext } from 'astro';
 import { experimental_AstroContainer } from 'astro/container';
 import { render, type CollectionEntry } from 'astro:content';
+import { isElement } from 'hast-util-is-element';
 import { select, selectAll } from 'hast-util-select';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
+import { remove } from 'unist-util-remove';
+import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
+
+/** Minification defaults */
+const minifyDefaults = { note: true, tip: true, caution: false, danger: false, details: true };
+/** Resolved minification options */
+const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
 
 const astroContainer = await experimental_AstroContainer.create({
 	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
 });
 
 const htmlToMarkdownPipeline = unified()
-	.use(rehypeParse)
+	.use(rehypeParse, { fragment: true })
+	.use(function minifyLlmsTxt() {
+		return (tree, file) => {
+			if (!file.data.starlightLlmsTxt.minify) {
+				return;
+			}
+			remove(tree, (node) => {
+				// Remove <details> elements:
+				if (minify.details && isElement(node, 'details')) {
+					return true;
+				}
+
+				// Remove aside components:
+				return Boolean(
+					isElement(node, 'aside') &&
+						Array.isArray(node.properties.className) &&
+						node.properties.className.includes('starlight-aside') &&
+						((minify.note && node.properties.className.includes('starlight-aside--note')) ||
+							(minify.tip && node.properties.className.includes('starlight-aside--tip')) ||
+							(minify.caution && node.properties.className.includes('starlight-aside--caution')) ||
+							(minify.danger && node.properties.className.includes('starlight-aside--danger')))
+				);
+			});
+			return tree;
+		};
+	})
 	.use(function improveExpressiveCodeHandling() {
 		return (tree) => {
 			const ecInstances = selectAll('.expressive-code', tree as Parameters<typeof selectAll>[1]);

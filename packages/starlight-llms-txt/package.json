@@ -10,12 +10,14 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^4.0.5",
+		"hast-util-is-element": "^3.0.0",
 		"hast-util-select": "^6.0.3",
 		"rehype-parse": "^9.0.1",
 		"rehype-remark": "^10.0.0",
 		"remark-gfm": "^4.0.0",
 		"remark-stringify": "^11.0.0",
-		"unified": "^11.0.5"
+		"unified": "^11.0.5",
+		"unist-util-remove": "^4.0.0"
 	},
 	"devDependencies": {
 		"@astrojs/starlight": "^0.31.0",

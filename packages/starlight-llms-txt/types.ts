@@ -9,6 +9,7 @@ export interface ProjectContext {
 	title: StarlightUserConfig['title'];
 	description: StarlightUserConfig['description'];
 	details: StarlightLllmsTextOptions['details'];
+	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
 }
 
 /** Plugin user options. */
@@ -58,4 +59,33 @@ export interface StarlightLllmsTextOptions {
 	 * ```
 	 */
 	details?: string;
+
+	/** Control what elements are removed in `llms-small.txt`. */
+	minify?: {
+		/**
+		 * Remove Starlight note asides in `llms-small.txt`.
+		 * @default true
+		 */
+		note?: boolean;
+		/**
+		 * Remove Starlight tip asides in `llms-small.txt`.
+		 * @default true
+		 */
+		tip?: boolean;
+		/**
+		 * Remove Starlight caution asides in `llms-small.txt`.
+		 * @default false
+		 */
+		caution?: boolean;
+		/**
+		 * Remove Starlight danger asides in `llms-small.txt`.
+		 * @default false
+		 */
+		danger?: boolean;
+		/**
+		 * Remove HTML `<details>` elements in `llms-small.txt`.
+		 * @default true
+		 */
+		details?: boolean;
+	};
 }
