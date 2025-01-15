@@ -26,6 +26,11 @@ export default defineConfig({
 							url: 'https://llmstxt.org/',
 							description: 'full context about how to use llms.txt files',
 						},
+						{
+							label: 'Starlight documentation',
+							url: 'https://starlight.astro.build/',
+							description: 'documentation for the Starlight documentation framework',
+						},
 					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
