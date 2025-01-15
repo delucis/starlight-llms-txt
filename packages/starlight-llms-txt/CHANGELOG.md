@@ -1,5 +1,17 @@
 # starlight-llms-txt
 
+## 0.2.0
+
+### Minor Changes
+
+- [#4](https://github.com/delucis/starlight-llms-txt/pull/4) [`a4a77ca`](https://github.com/delucis/starlight-llms-txt/commit/a4a77ca433b7cee7cbeb3c603498e760cd037867) Thanks [@delucis](https://github.com/delucis)! - Adds support for generating a smaller `llms-small.txt` file for smaller context windows
+
+- [`618fa88`](https://github.com/delucis/starlight-llms-txt/commit/618fa882d29bc4b7ce054392c9b65d97ce1ceb82) Thanks [@delucis](https://github.com/delucis)! - Adds support for including additional optional links in the main `llms.txt` entrypoint
+
+### Patch Changes
+
+- [#4](https://github.com/delucis/starlight-llms-txt/pull/4) [`a4a77ca`](https://github.com/delucis/starlight-llms-txt/commit/a4a77ca433b7cee7cbeb3c603498e760cd037867) Thanks [@delucis](https://github.com/delucis)! - Sort pages in llms.txt output
+
 ## 0.1.2
 
 ### Patch Changes
