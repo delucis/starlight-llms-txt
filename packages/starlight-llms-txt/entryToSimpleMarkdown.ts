@@ -67,6 +67,16 @@ const htmlToMarkdownPipeline = unified()
 		return (tree) => {
 			const ecInstances = selectAll('.expressive-code', tree as Parameters<typeof selectAll>[1]);
 			for (const instance of ecInstances) {
+				// Remove the “Terminal Window” label from Expressive Code terminal frames.
+				const figcaption = select('figcaption', instance);
+				if (figcaption) {
+					const terminalWindowTextIndex = figcaption.children.findIndex((child) =>
+						matches('span.sr-only', child)
+					);
+					if (terminalWindowTextIndex > -1) {
+						figcaption.children.splice(terminalWindowTextIndex, 1);
+					}
+				}
 				const pre = select('pre', instance);
 				const code = select('code', instance);
 				// Use Expressive Code’s `data-language=*` attribute to set a `language-*` class name.
