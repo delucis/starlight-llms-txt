@@ -1,7 +1,10 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { entryToSimpleMarkdown } from './entryToSimpleMarkdown';
-import { getSiteTitle, isDefaultLocale } from './utils';
+import { defaultLang, getSiteTitle, isDefaultLocale } from './utils';
+
+/** Collator to compare two strings in the default language. */
+const collator = new Intl.Collator(defaultLang);
 
 /**
  * Generates a single plaintext Markdown document from the full website content.
@@ -13,7 +16,11 @@ export async function generateLlmsTxt(
 		minify: boolean;
 	}
 ): Promise<string> {
-	const docs = await getCollection('docs', isDefaultLocale);
+	const docs = (await getCollection('docs', isDefaultLocale)).sort((a, b) => {
+		const aIsIndex = a.id === 'index';
+		const bIsIndex = b.id === 'index';
+		return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
+	});
 	const segments: string[] = [];
 	for (const doc of docs) {
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];
