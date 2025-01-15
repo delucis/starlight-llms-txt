@@ -37,28 +37,30 @@ const htmlToMarkdownPipeline = unified()
 			if (!file.data.starlightLlmsTxt.minify) {
 				return;
 			}
-			remove(tree, (node) => {
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
 				// Remove <details> elements:
 				if (minify.details && isElement(node, 'details')) {
 					return true;
 				}
 
+				// Remove elements matching a user’s custom selectors:
 				for (const selector of minify.customSelectors) {
-					if (matches(selector, node as RootContent)) {
+					if (matches(selector, node)) {
 						return true;
 					}
 				}
 
 				// Remove aside components:
-				return Boolean(
-					isElement(node, 'aside') &&
-						Array.isArray(node.properties.className) &&
-						node.properties.className.includes('starlight-aside') &&
-						((minify.note && node.properties.className.includes('starlight-aside--note')) ||
-							(minify.tip && node.properties.className.includes('starlight-aside--tip')) ||
-							(minify.caution && node.properties.className.includes('starlight-aside--caution')) ||
-							(minify.danger && node.properties.className.includes('starlight-aside--danger')))
-				);
+				if (matches('.starlight-aside', node)) {
+					for (const variant of ['note', 'tip', 'caution', 'danger'] as const) {
+						if (minify[variant] && matches(`.starlight-aside--${variant}`, node)) {
+							return true;
+						}
+					}
+				}
+
+				return false;
 			});
 			return tree;
 		};
