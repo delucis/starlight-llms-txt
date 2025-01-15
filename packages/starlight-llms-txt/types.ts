@@ -93,17 +93,27 @@ export interface StarlightLllmsTextOptions {
 		 * @default true
 		 */
 		whitespace?: boolean;
+
+		/**
+		 * Custom selectors to exclude when generating `llms-small.txt`.
+		 *
+		 * @default []
+		 *
+		 * @example
+		 * // Filter out elements with the class name `sponsors` when creating llms-small.txt
+		 * customSelectors: [".sponsors"],
+		 */
+		customSelectors?: string[];
 	};
 
 	/**
 	 * Slugs of pages to exclude from `llms-small.txt`. Supports glob patterns.
 	 *
+	 * @default []
+	 *
 	 * @example
 	 * // Ignore an old page and all tutorial pages when creating llms-small.txt
-	 * exclude: [
-	 * 	"old-page",
-	 * 	"tutorial/**"
-	 * ],
+	 * exclude: ["old-page", "tutorial/**"],
 	 */
 	exclude?: string[];
 }

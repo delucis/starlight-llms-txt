@@ -38,6 +38,9 @@ importers:
       '@astrojs/mdx':
         specifier: ^4.0.5
         version: 4.0.5(astro@5.1.6(rollup@4.30.1)(typescript@5.7.3))
+      '@types/hast':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/micromatch':
         specifier: ^4.0.9
         version: 4.0.9

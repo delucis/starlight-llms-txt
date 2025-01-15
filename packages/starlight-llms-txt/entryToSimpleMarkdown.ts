@@ -2,8 +2,9 @@ import mdxServer from '@astrojs/mdx/server.js';
 import type { APIContext } from 'astro';
 import { experimental_AstroContainer } from 'astro/container';
 import { render, type CollectionEntry } from 'astro:content';
+import type { RootContent } from 'hast';
 import { isElement } from 'hast-util-is-element';
-import { select, selectAll } from 'hast-util-select';
+import { matches, select, selectAll } from 'hast-util-select';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
@@ -20,6 +21,7 @@ const minifyDefaults = {
 	danger: false,
 	details: true,
 	whitespace: true,
+	customSelectors: [],
 };
 /** Resolved minification options */
 const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
@@ -39,6 +41,12 @@ const htmlToMarkdownPipeline = unified()
 				// Remove <details> elements:
 				if (minify.details && isElement(node, 'details')) {
 					return true;
+				}
+
+				for (const selector of minify.customSelectors) {
+					if (matches(selector, node as RootContent)) {
+						return true;
+					}
 				}
 
 				// Remove aside components:

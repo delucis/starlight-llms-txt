@@ -90,23 +90,73 @@ exclude: ['old-page', 'tutorial/**'],
 
 ### `minify`
 
-**Type:** `Record<'note' | 'tip' | 'caution' | 'danger' | 'details' | 'whitespace', boolean>`
-
 A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.
 Set an element to `true` to filter it out or to `false` to keep it.
 
-By default, the following minify values are used:
+Use the [`customSelectors`](#minifycustomselectors) option to provide an array of additional CSS-style selectors that match elements to exclude.
+
+In the following example, the default exclusion of notes is overridden and a custom in-page navigation component is added to the elements to exclude:
 
 ```ts
 minify: {
-	// Starlight aside variants
-	note: true,
-	tip: true,
-	caution: false,
-	danger: false,
-	// HTML elements
-	details: true,
-	// Whether whitespace should be collapsed
-	whitespace: true,
+	note: false,
+	customSelectors: ['.my-page-nav'],
 },
 ```
+
+#### `minify.customSelectors`
+
+**Type:** `string[]`  
+**Default:** `[]`
+
+Specify custom CSS-style selectors to exclude.
+Selectors are tested with [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support) and should match your site’s HTML output.
+
+In the following example, `customSelectors` is used to exclude an `<interactive-demo>` custom element and an element showing a project’s sponsors that has the `sponsors-banner` class name:
+
+```ts
+customSelectors: ['interactive-demo', '.sponsors-banner'],
+```
+
+#### `minify.note`
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Exclude the `note` variant of Starlight’s aside component.
+
+#### `minify.tip`
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Exclude the `tip` variant of Starlight’s aside component.
+
+#### `minify.caution`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+Exclude the `caution` variant of Starlight’s aside component.
+
+#### `minify.danger`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+Exclude the `danger` variant of Starlight’s aside component.
+
+#### `minify.details`
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Exclude the `<details>` HTML element.
+
+#### `minify.whitespace`
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Collapse whitespace.
+When `minify.whitespace` is set to `true`, all whitespace — including new lines — is collapsed to a single space character.
