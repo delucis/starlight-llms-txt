@@ -18,13 +18,15 @@ export async function generateLlmsTxt(
 		minify: boolean;
 	}
 ): Promise<string> {
-	const docs = (await getCollection('docs', isDefaultLocale))
-		.filter((doc) => !micromatch.isMatch(doc.id, starlightLllmsTxtContext.exclude))
-		.sort((a, b) => {
-			const aIsIndex = a.id === 'index';
-			const bIsIndex = b.id === 'index';
-			return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
-		});
+	let docs = await getCollection('docs', isDefaultLocale);
+	if (options.minify) {
+		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, starlightLllmsTxtContext.exclude));
+	}
+	docs.sort((a, b) => {
+		const aIsIndex = a.id === 'index';
+		const bIsIndex = b.id === 'index';
+		return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
+	});
 	const segments: string[] = [];
 	for (const doc of docs) {
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];
