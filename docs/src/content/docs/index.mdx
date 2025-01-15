@@ -19,15 +19,15 @@ head:
       .hero-html {
         --size: min(10rem, calc(5rem + 6vw));
         --blur: calc(var(--size) / 5);
-        --x-shift: calc(var(--size) / 3);
-        --y-shift: calc(var(--size) / 5);
+        --x-shift: calc(var(--size) / 5);
+        --y-shift: calc(var(--size) / 10);
         font-size: var(--size);
         line-height: var(--size);
         justify-content: center;
         filter:
-          drop-shadow(0 0 var(--blur) var(--sl-color-orange))
+          drop-shadow(0 calc(-1 * var(--x-shift)) var(--blur) var(--sl-color-orange))
           drop-shadow(calc(-1 * var(--x-shift)) var(--y-shift) var(--blur) var(--sl-color-red))
-          drop-shadow(var(--x-shift) calc(-1 * var(--y-shift)) var(--blur) var(--sl-color-purple));
+          drop-shadow(var(--x-shift) var(--y-shift) var(--blur) var(--sl-color-purple));
         z-index: -1;
       }
       [data-has-hero] header {
