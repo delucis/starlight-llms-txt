@@ -9,6 +9,8 @@ export interface ProjectContext {
 	title: StarlightUserConfig['title'];
 	description: StarlightUserConfig['description'];
 	details: StarlightLllmsTextOptions['details'];
+	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
+	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 }
 
 /** Plugin user options. */
@@ -58,4 +60,60 @@ export interface StarlightLllmsTextOptions {
 	 * ```
 	 */
 	details?: string;
+
+	/** Control what elements are removed in `llms-small.txt`. */
+	minify?: {
+		/**
+		 * Remove Starlight note asides in `llms-small.txt`.
+		 * @default true
+		 */
+		note?: boolean;
+		/**
+		 * Remove Starlight tip asides in `llms-small.txt`.
+		 * @default true
+		 */
+		tip?: boolean;
+		/**
+		 * Remove Starlight caution asides in `llms-small.txt`.
+		 * @default false
+		 */
+		caution?: boolean;
+		/**
+		 * Remove Starlight danger asides in `llms-small.txt`.
+		 * @default false
+		 */
+		danger?: boolean;
+		/**
+		 * Remove HTML `<details>` elements in `llms-small.txt`.
+		 * @default true
+		 */
+		details?: boolean;
+		/**
+		 * Collapse whitespace in `llms-small.txt`.
+		 * @default true
+		 */
+		whitespace?: boolean;
+
+		/**
+		 * Custom selectors to exclude when generating `llms-small.txt`.
+		 *
+		 * @default []
+		 *
+		 * @example
+		 * // Filter out elements with the class name `sponsors` when creating llms-small.txt
+		 * customSelectors: [".sponsors"],
+		 */
+		customSelectors?: string[];
+	};
+
+	/**
+	 * Slugs of pages to exclude from `llms-small.txt`. Supports glob patterns.
+	 *
+	 * @default []
+	 *
+	 * @example
+	 * // Ignore an old page and all tutorial pages when creating llms-small.txt
+	 * exclude: ["old-page", "tutorial/**"],
+	 */
+	exclude?: string[];
 }

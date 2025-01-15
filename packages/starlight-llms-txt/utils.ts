@@ -2,7 +2,7 @@ import type { CollectionEntry } from 'astro:content';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 
 const { defaultLocale, locales, title } = starlightLllmsTxtContext;
-const defaultLang = (defaultLocale === 'root' ? locales?.root?.lang : defaultLocale) || 'en';
+export const defaultLang = (defaultLocale === 'root' ? locales?.root?.lang : defaultLocale) || 'en';
 
 /** Get the site title from the Starlight config. */
 export function getSiteTitle(): string {
