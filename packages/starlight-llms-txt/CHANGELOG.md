@@ -1,5 +1,13 @@
 # starlight-llms-txt
 
+## 0.2.1
+
+### Patch Changes
+
+- [`39760e7`](https://github.com/delucis/starlight-llms-txt/commit/39760e70e921b685bc6dc6a5338f8f80bf79e57e) Thanks [@delucis](https://github.com/delucis)! - Removes Expressive Code’s “Terminal Window” labels from output
+
+- [`26fa616`](https://github.com/delucis/starlight-llms-txt/commit/26fa616793798bda41911bfe7dc229475f89db26) Thanks [@delucis](https://github.com/delucis)! - Fixes a bug where pages excluded using the `exclude` configuration option were excluded in `llms-full.txt` instead of only in `llms-small.txt`
+
 ## 0.2.0
 
 ### Minor Changes
