@@ -12,6 +12,7 @@ export const GET: APIRoute = async (context) => {
 		: '';
 	const site = new URL(ensureTrailingSlash(starlightLllmsTxtContext.base), context.site);
 	const llmsFullLink = new URL('./llms-full.txt', site);
+	const llmsSmallLink = new URL('./llms-small.txt', site);
 
 	const segments = [`# ${title}`];
 	if (description) segments.push(description);
@@ -20,7 +21,9 @@ export const GET: APIRoute = async (context) => {
 	// Further documentation links.
 	segments.push(`## Documentation Sets`);
 	segments.push(
-		`- [Complete documentation](${llmsFullLink}): the full documentation for ${getSiteTitle()}`
+		`- [Abridged documentation](${llmsSmallLink}): a compact version of the documentation for ${getSiteTitle()}, with non-essential content removed` +
+			'\n' +
+			`- [Complete documentation](${llmsFullLink}): the full documentation for ${getSiteTitle()}`
 	);
 
 	// Additional notes.
