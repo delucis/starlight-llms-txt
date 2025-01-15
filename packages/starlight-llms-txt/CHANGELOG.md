@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.1.2
+
+### Patch Changes
+
+- [`d5ca030`](https://github.com/delucis/starlight-llms-txt/commit/d5ca0307192585f141164dd8328f244f32db5a90) Thanks [@delucis](https://github.com/delucis)! - Improves rendering of Starlight Tabs component in output
+
 ## 0.1.1
 
 ### Patch Changes
