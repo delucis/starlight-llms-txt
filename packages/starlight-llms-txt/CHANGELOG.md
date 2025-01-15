@@ -1,5 +1,17 @@
 # starlight-llms-txt
 
+## 0.1.2
+
+### Patch Changes
+
+- [`d5ca030`](https://github.com/delucis/starlight-llms-txt/commit/d5ca0307192585f141164dd8328f244f32db5a90) Thanks [@delucis](https://github.com/delucis)! - Improves rendering of Starlight Tabs component in output
+
+## 0.1.1
+
+### Patch Changes
+
+- [`04f641c`](https://github.com/delucis/starlight-llms-txt/commit/04f641c48dd70acf480c80df26d9e2f774510428) Thanks [@delucis](https://github.com/delucis)! - Preserves language metadata on code blocks
+
 ## 0.1.0
 
 ### Minor Changes

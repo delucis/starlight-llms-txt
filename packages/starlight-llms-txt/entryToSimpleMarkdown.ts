@@ -70,6 +70,45 @@ const htmlToMarkdownPipeline = unified()
 			}
 		};
 	})
+	.use(function improveTabsHandling() {
+		return (tree) => {
+			const tabInstances = selectAll('starlight-tabs', tree as Parameters<typeof selectAll>[1]);
+			for (const instance of tabInstances) {
+				const tabs = selectAll('[role="tab"]', instance);
+				const panels = selectAll('[role="tabpanel"]', instance);
+				// Convert parent `<starlight-tabs>` element to empty unordered list.
+				instance.tagName = 'ul';
+				instance.properties = {};
+				instance.children = [];
+				// Iterate over tabs and panels to build a list with tab label as initial list text.
+				for (let i = 0; i < Math.min(tabs.length, panels.length); i++) {
+					const tab = tabs[i];
+					const panel = panels[i];
+					if (!tab || !panel) continue;
+					// Filter out extra whitespace and icons from tab contents.
+					const tabLabel = tab.children
+						.filter((child) => child.type === 'text' && child.value.trim())
+						.map((child) => child.type === 'text' && child.value.trim())
+						.join('');
+					// Add list entry for this tab and panel.
+					instance.children.push({
+						type: 'element',
+						tagName: 'li',
+						properties: {},
+						children: [
+							{
+								type: 'element',
+								tagName: 'p',
+								children: [{ type: 'text', value: tabLabel }],
+								properties: {},
+							},
+							panel,
+						],
+					});
+				}
+			}
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);
