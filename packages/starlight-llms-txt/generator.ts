@@ -22,11 +22,14 @@ export async function generateLlmsTxt(
 	if (options.minify) {
 		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, starlightLllmsTxtContext.exclude));
 	}
-	docs.sort((a, b) => {
-		const aIsIndex = a.id === 'index';
-		const bIsIndex = b.id === 'index';
-		return aIsIndex && !bIsIndex ? -1 : bIsIndex && !aIsIndex ? 1 : collator.compare(a.id, b.id);
-	});
+	const { promote, demote } = starlightLllmsTxtContext;
+	const prioritizePages = (id: string) => {
+		const demoted = demote.findIndex((expr) => micromatch.isMatch(id, expr));
+		const promoted = demoted > -1 ? -1 : promote.findIndex((expr) => micromatch.isMatch(id, expr));
+		const prefixLength = (promoted > -1 ? promote.length - promoted : 0) + demote.length - demoted - 1;
+		return '_'.repeat(prefixLength) + id;
+	};
+	docs.sort((a, b) => collator.compare(prioritizePages(a.id), prioritizePages(b.id)));
 	const segments: string[] = [];
 	for (const doc of docs) {
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];

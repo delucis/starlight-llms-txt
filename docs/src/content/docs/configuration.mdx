@@ -81,6 +81,28 @@ An array of optional links to add to the `llms.txt` entrypoint.
 URLs provided here can be skipped by the LLM if a shorter context is needed.
 Use it for secondary information which is not already in your docs content.
 
+### `promote`
+
+**Type:** `string[]`  
+**Default:** `['index*', 'getting-started*', '!*/*']`
+
+Micromatch expressions to match page IDs that should be sorted to the top of the output.
+
+The default value promotes the pages `index` and `getting-started` to the top of the list, followed by any pages in the root directory of the docs.
+
+```ts
+promote: ['index*', 'getting-started*', '!*/*'],
+```
+
+### `demote`
+
+**Type:** `string[]`  
+**Default:** `[]`
+
+Micromatch expressions to match page IDs that should be sorted to the end of the output.
+
+If a page matches both `promote` and `demote`, it will be demoted.
+
 ### `exclude`
 
 **Type:** `string[]`  
