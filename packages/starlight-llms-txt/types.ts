@@ -11,6 +11,8 @@ export interface ProjectContext {
 	details: StarlightLllmsTextOptions['details'];
 	optionalLinks: NonNullable<StarlightLllmsTextOptions['optionalLinks']>;
 	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
+	promote: NonNullable<StarlightLllmsTextOptions['promote']>;
+	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 }
 
@@ -118,6 +120,23 @@ export interface StarlightLllmsTextOptions {
 		 */
 		customSelectors?: string[];
 	};
+
+	/**
+	 * Micromatch expressions to match page IDs that should be sorted to the top of the output.
+	 *
+	 * @default
+	 * ['index*']
+	 */
+	promote?: string[];
+
+	/**
+	 * Micromatch expressions to match page IDs that should be sorted to the end of the output.
+	 *
+	 * If a page matches both `promote` and `demote`, it will be demoted.
+	 *
+	 * @default []
+	 */
+	demote?: string[];
 
 	/**
 	 * Slugs of pages to exclude from `llms-small.txt`. Supports glob patterns.
