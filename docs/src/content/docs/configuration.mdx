@@ -86,7 +86,9 @@ Use it for secondary information which is not already in your docs content.
 **Type:** `string[]`  
 **Default:** `['index*']`
 
-Micromatch expressions to match page IDs that should be sorted to the top of the output.
+Use the `promote` option to specify pages that should be sorted to the top of the `llms-full.txt` and `llms-small.txt` files.
+The value should be an array of page slugs or glob patterns that match page slugs.
+Glob patterns are processed using [`micromatch`’s matching features](https://github.com/micromatch/micromatch#matching-features).
 
 The default value promotes the index page. If you'd like to promote more or other pages, add them to the array:
 
@@ -101,10 +103,11 @@ promote: ['index*', 'getting-started*', '!*/*'],
 **Type:** `string[]`  
 **Default:** `[]`
 
-Micromatch expressions to match page IDs that should be sorted to the end of the output.
+Use the `demote` option to specify pages that should be sorted to the bottom of the `llms-full.txt` and `llms-small.txt` files.
+The value should be an array of page slugs or glob patterns that match page slugs.
+Glob patterns are processed using [`micromatch`’s matching features](https://github.com/micromatch/micromatch#matching-features).
 
-If a page matches both `promote` and `demote`, it will be demoted.
-
+If a page matches patterns in both `promote` and `demote`, it will be demoted.
 ### `exclude`
 
 **Type:** `string[]`  
