@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.3.0
+
+### Minor Changes
+
+- [#7](https://github.com/delucis/starlight-llms-txt/pull/7) [`cba125e`](https://github.com/delucis/starlight-llms-txt/commit/cba125ed259601895ba78f6da95a55564b914470) Thanks [@hippotastic](https://github.com/hippotastic)! - Adds options to promote or demote pages in the order of the `llms-full.txt` and `llms-small.txt` output files
+
 ## 0.2.1
 
 ### Patch Changes
