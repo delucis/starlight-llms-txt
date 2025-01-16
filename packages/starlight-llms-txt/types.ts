@@ -125,9 +125,7 @@ export interface StarlightLllmsTextOptions {
 	 * Micromatch expressions to match page IDs that should be sorted to the top of the output.
 	 *
 	 * @default
-	 * // Note that there is not actually a space in the last expression,
-	 * // removing it would close this JSDoc comment.
-	 * ['index*', 'getting-started*', '!* /*']
+	 * ['index*']
 	 */
 	promote?: string[];
 
