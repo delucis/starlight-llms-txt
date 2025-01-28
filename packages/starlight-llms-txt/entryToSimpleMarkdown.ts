@@ -127,6 +127,18 @@ const htmlToMarkdownPipeline = unified()
 			}
 		};
 	})
+	.use(function improveFileTreeHandling() {
+		return (tree) => {
+			const trees = selectAll('starlight-file-tree', tree as Parameters<typeof selectAll>[1]);
+			for (const tree of trees) {
+				// Remove “Directory” screen reader labels from <FileTree> entries.
+				remove(tree, (_node) => {
+					const node = _node as RootContent;
+					return matches('.sr-only', node);
+				});
+			}
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);
