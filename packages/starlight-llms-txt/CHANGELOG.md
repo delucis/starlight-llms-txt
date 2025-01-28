@@ -1,5 +1,15 @@
 # starlight-llms-txt
 
+## 0.4.0
+
+### Minor Changes
+
+- [#10](https://github.com/delucis/starlight-llms-txt/pull/10) [`7f914f5`](https://github.com/delucis/starlight-llms-txt/commit/7f914f526dbe504ed3e3763864fd9ec1d5150d0d) Thanks [@delucis](https://github.com/delucis)! - Adds a new `customSets` option to support breaking up large docs into multiple custom document sets
+
+### Patch Changes
+
+- [`0c0678d`](https://github.com/delucis/starlight-llms-txt/commit/0c0678da19f1f9981f808a1fa0e1a01c77a26b4d) Thanks [@delucis](https://github.com/delucis)! - Improves rendering of Starlight’s `<FileTree>` component by removing “Directory” labels
+
 ## 0.3.0
 
 ### Minor Changes
