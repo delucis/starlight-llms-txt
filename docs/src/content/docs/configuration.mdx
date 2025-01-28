@@ -81,6 +81,33 @@ An array of optional links to add to the `llms.txt` entrypoint.
 URLs provided here can be skipped by the LLM if a shorter context is needed.
 Use it for secondary information which is not already in your docs content.
 
+### `customSets`
+
+**Type:** `Array<{ label: string; paths: string[]; description?: string;  }>`  
+**Default:** `[]`
+
+Specify additional subsets of your docs pages to generate and link to from `llms.txt`.
+
+This can be helpful for large docs sites where you need to break up your content into categories, so that LLMs can choose what data to ingest.
+
+Each custom set should define a label and an array of page slugs or glob patterns that match page slugs to include.
+Glob patterns are processed using [`micromatch`’s matching features](https://github.com/micromatch/micromatch#matching-features).
+
+```js
+customSets: [
+	{
+		label: 'Reference',
+		description: 'full reference documentation for my project',
+		paths: ['reference/**'],
+	},
+	{
+		label: 'Tutorial',
+		description: 'step-by-step tutorial for how to build a new project',
+		paths: ['tutorial/**'],
+	},
+];
+```
+
 ### `promote`
 
 **Type:** `string[]`  
@@ -108,6 +135,7 @@ The value should be an array of page slugs or glob patterns that match page slug
 Glob patterns are processed using [`micromatch`’s matching features](https://github.com/micromatch/micromatch#matching-features).
 
 If a page matches patterns in both `promote` and `demote`, it will be demoted.
+
 ### `exclude`
 
 **Type:** `string[]`  

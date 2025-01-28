@@ -12,6 +12,7 @@
 		"@astrojs/mdx": "^4.0.5",
 		"@types/hast": "^3.0.4",
 		"@types/micromatch": "^4.0.9",
+		"github-slugger": "^2.0.0",
 		"hast-util-select": "^6.0.3",
 		"micromatch": "^4.0.8",
 		"rehype-parse": "^9.0.1",
