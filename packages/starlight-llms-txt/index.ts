@@ -1,5 +1,6 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types';
 import { AstroError } from 'astro/errors';
+import GithubSlugger from 'github-slugger';
 import type { ProjectContext, StarlightLllmsTextOptions } from './types';
 
 export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): StarlightPlugin {
@@ -29,13 +30,22 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								entrypoint: new URL('./llms-small.txt.ts', import.meta.url),
 								pattern: '/llms-small.txt',
 							});
+							injectRoute({
+								entrypoint: new URL('./llms-custom.txt.ts', import.meta.url),
+								pattern: '/_llms-txt/[slug].txt',
+							});
 
+							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
 								base: astroConfig.base,
 								title: opts.projectName ?? config.title,
 								description: opts.description ?? config.description,
 								details: opts.details,
 								optionalLinks: opts.optionalLinks ?? [],
+								customSets: (opts.customSets ?? []).map((set) => ({
+									...set,
+									slug: slugger.slug(set.label),
+								})),
 								minify: opts.minify ?? {},
 								promote: opts.promote ?? ['index*'],
 								demote: opts.demote ?? [],

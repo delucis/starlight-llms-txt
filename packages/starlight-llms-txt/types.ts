@@ -1,6 +1,19 @@
 import type { StarlightUserConfig } from '@astrojs/starlight/types';
 import type { AstroConfig } from 'astro';
 
+interface CustomSetUserConfig {
+	/** Label for this subset of documentation, e.g. `"Tutorial"` */
+	label: string;
+	/** An array of page slugs or glob patterns that match page slugs for docs to include in this set., e.g. `["tutorial/**"]` */
+	paths: string[];
+	/** An optional description for this subset of the documentation, e.g. `"a step-by-step tutorial to build a new project"` */
+	description?: string;
+}
+
+interface CustomSet extends CustomSetUserConfig {
+	slug: string;
+}
+
 /** Project configuration metadata passed from the integration to the routes in a virtual module. */
 export interface ProjectContext {
 	base: AstroConfig['base'];
@@ -10,6 +23,7 @@ export interface ProjectContext {
 	description: StarlightUserConfig['description'];
 	details: StarlightLllmsTextOptions['details'];
 	optionalLinks: NonNullable<StarlightLllmsTextOptions['optionalLinks']>;
+	customSets: Array<CustomSet>;
 	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
 	promote: NonNullable<StarlightLllmsTextOptions['promote']>;
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
@@ -75,6 +89,11 @@ export interface StarlightLllmsTextOptions {
 		url: string;
 		description?: string;
 	}>;
+
+	/**
+	 * An array of custom subsets of your docs to process and add to the `llms.txt` entrypoint.
+	 */
+	customSets?: Array<CustomSetUserConfig>;
 
 	/** Control what elements are removed in `llms-small.txt`. */
 	minify?: {
