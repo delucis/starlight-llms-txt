@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.4.1
+
+### Patch Changes
+
+- [#13](https://github.com/delucis/starlight-llms-txt/pull/13) [`629fa9b`](https://github.com/delucis/starlight-llms-txt/commit/629fa9b00444a70ebf9aac3e15375f400f8a10cc) Thanks [@jumski](https://github.com/jumski)! - Filters out draft pages from output
+
 ## 0.4.0
 
 ### Minor Changes
