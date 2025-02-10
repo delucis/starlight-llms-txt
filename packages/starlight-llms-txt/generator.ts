@@ -27,7 +27,7 @@ export async function generateLlmsTxt(
 		include?: string[] | undefined;
 	}
 ): Promise<string> {
-	let docs = await getCollection('docs', isDefaultLocale);
+	let docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
 	if (include) {
 		docs = docs.filter((doc) => micromatch.isMatch(doc.id, include));
 	}
