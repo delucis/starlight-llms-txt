@@ -18,6 +18,7 @@ export async function generateLlmsTxt(
 		description,
 		exclude,
 		include,
+		pageSeparator
 	}: {
 		/** Generate a smaller file to fit within smaller context windows. */
 		minify: boolean;
@@ -25,6 +26,7 @@ export async function generateLlmsTxt(
 		description: string | undefined;
 		exclude?: string[] | undefined;
 		include?: string[] | undefined;
+		pageSeparator?: string | undefined;
 	}
 ): Promise<string> {
 	let docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
@@ -62,5 +64,5 @@ export async function generateLlmsTxt(
 	if (description) {
 		segments.unshift(`<SYSTEM>${description}</SYSTEM>`);
 	}
-	return segments.join('\n\n');
+	return segments.join(pageSeparator ?? '\n\n');
 }
