@@ -18,7 +18,6 @@ export async function generateLlmsTxt(
 		description,
 		exclude,
 		include,
-		pageSeparator
 	}: {
 		/** Generate a smaller file to fit within smaller context windows. */
 		minify: boolean;
@@ -26,7 +25,6 @@ export async function generateLlmsTxt(
 		description: string | undefined;
 		exclude?: string[] | undefined;
 		include?: string[] | undefined;
-		pageSeparator?: string | undefined;
 	}
 ): Promise<string> {
 	let docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
@@ -36,7 +34,7 @@ export async function generateLlmsTxt(
 	if (exclude) {
 		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, exclude));
 	}
-	const { promote, demote } = starlightLllmsTxtContext;
+	const { promote, demote, pageSeparator = "\n\n" } = starlightLllmsTxtContext;
 	/** Processes page IDs by prepending underscores to influence the sorting order. */
 	const prioritizePages = (id: string) => {
 		// Match the page ID against the patterns listed in the `promote` and `demote`
@@ -64,5 +62,5 @@ export async function generateLlmsTxt(
 	if (description) {
 		segments.unshift(`<SYSTEM>${description}</SYSTEM>`);
 	}
-	return segments.join(pageSeparator ?? '\n\n');
+	return segments.join(pageSeparator);
 }
