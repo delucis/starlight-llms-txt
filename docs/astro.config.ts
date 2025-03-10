@@ -34,7 +34,8 @@ export default defineConfig({
 					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
-					pageSeparator: `\n\n\n`
+					pageSeparator: `\n\n\n`,
+					pageMarkdownCleaner: async (text) => text.trim(),
 				}),
 			],
 			sidebar: ['getting-started', 'configuration'],

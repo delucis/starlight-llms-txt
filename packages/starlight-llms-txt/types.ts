@@ -29,6 +29,7 @@ export interface ProjectContext {
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
+	pageMarkdownCleaner: StarlightLllmsTextOptions['pageMarkdownCleaner'];
 }
 
 /** Plugin user options. */
@@ -174,4 +175,9 @@ export interface StarlightLllmsTextOptions {
 	 * @default "\n\n"
 	 */
 	pageSeparator?: string;
+
+	/**
+	 * A callback that will be called on the 'rendered' markdown; which allows for custom filtering/cleaning of the generated content.
+	 */
+	pageMarkdownCleaner?: (text:string) => string | Promise<string>;
 }
