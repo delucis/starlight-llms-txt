@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.5.0
+
+### Minor Changes
+
+- [#18](https://github.com/delucis/starlight-llms-txt/pull/18) [`52838f6`](https://github.com/delucis/starlight-llms-txt/commit/52838f63fc5280436982880744921dac923d4be2) Thanks [@pelikhan](https://github.com/pelikhan)! - Add page separator configuration object
+
 ## 0.4.1
 
 ### Patch Changes
