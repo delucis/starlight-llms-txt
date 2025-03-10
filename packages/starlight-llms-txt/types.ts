@@ -28,7 +28,7 @@ export interface ProjectContext {
 	promote: NonNullable<StarlightLllmsTextOptions['promote']>;
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
-	pageSeparator: StarlightLllmsTextOptions['pageSeparator'];
+	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 }
 
 /** Plugin user options. */
