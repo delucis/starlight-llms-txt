@@ -34,7 +34,7 @@ export async function generateLlmsTxt(
 	if (exclude) {
 		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, exclude));
 	}
-	const { promote, demote, pageSeparator = "\n\n" } = starlightLllmsTxtContext;
+	const { promote, demote, pageSeparator } = starlightLllmsTxtContext;
 	/** Processes page IDs by prepending underscores to influence the sorting order. */
 	const prioritizePages = (id: string) => {
 		// Match the page ID against the patterns listed in the `promote` and `demote`
