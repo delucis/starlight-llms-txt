@@ -1,5 +1,5 @@
 ---
-"starlight-llms-txt": patch
+"starlight-llms-txt": minor
 ---
 
 Add page separator configuration object
