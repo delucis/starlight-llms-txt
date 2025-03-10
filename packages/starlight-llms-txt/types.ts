@@ -28,6 +28,7 @@ export interface ProjectContext {
 	promote: NonNullable<StarlightLllmsTextOptions['promote']>;
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
+	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 }
 
 /** Plugin user options. */
@@ -167,4 +168,10 @@ export interface StarlightLllmsTextOptions {
 	 * exclude: ["old-page", "tutorial/**"],
 	 */
 	exclude?: string[];
+
+	/**
+	 * String used to separate pages in the generated text.
+	 * @default "\n\n"
+	 */
+	pageSeparator?: string;
 }

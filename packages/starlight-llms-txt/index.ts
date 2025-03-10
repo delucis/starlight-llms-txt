@@ -52,6 +52,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								exclude: opts.exclude ?? [],
 								defaultLocale: config.defaultLocale,
 								locales: config.locales,
+								pageSeparator: opts.pageSeparator ?? '\n\n',
 							};
 
 							const modules = {
