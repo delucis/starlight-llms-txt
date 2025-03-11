@@ -34,7 +34,7 @@ export async function generateLlmsTxt(
 	if (exclude) {
 		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, exclude));
 	}
-	const { promote, demote, pageSeparator } = starlightLllmsTxtContext;
+	const { promote, demote, pageSeparator, pageMarkdownCleaner } = starlightLllmsTxtContext;
 	/** Processes page IDs by prepending underscores to influence the sorting order. */
 	const prioritizePages = (id: string) => {
 		// Match the page ID against the patterns listed in the `promote` and `demote`
@@ -56,7 +56,9 @@ export async function generateLlmsTxt(
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];
 		const description = doc.data.hero?.tagline || doc.data.description;
 		if (description) docSegments.push(`> ${description}`);
-		docSegments.push(await entryToSimpleMarkdown(doc, context, minify));
+		let md = await entryToSimpleMarkdown(doc, context, minify)
+		if (pageMarkdownCleaner) md = await pageMarkdownCleaner(md)
+		docSegments.push(md);
 		segments.push(docSegments.join('\n\n'));
 	}
 	if (description) {

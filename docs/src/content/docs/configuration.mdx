@@ -237,3 +237,9 @@ The separator used when concatenating page entries together.
 pageSeparator: '\n----------\n',
 ```
 
+### `pageMarkdownCleaner`
+
+**Type:** `(markdown: string) => string | Promise<string>`
+**Default:** `undefined`
+
+A callback that will be called on the 'rendered' markdown; which allows for custom filtering/cleaning of the generated content.
