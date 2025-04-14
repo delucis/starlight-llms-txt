@@ -92,12 +92,15 @@ const htmlToMarkdownPipeline = unified()
 						code.properties.className.push(`language-${pre.properties.dataLanguage}`);
 					} else {
 						code.properties.className.push('language-diff');
-						for (const element of diffLines) {
-							const span = select('span:not(.indent)', element);
-							if (span && span.children[0]?.type === 'text') {
-								span.children[0].value = `${
-									(element as any).properties.className.includes('ins') ? '+' : '-'
-								}${span.children[0].value}`;
+						for (const line of diffLines) {
+							if (line.type !== 'element') continue;
+							const classes = line.properties?.className;
+							if (typeof classes !== 'string' && !Array.isArray(classes)) continue;
+							const marker = classes.includes('ins') ? '+' : '-';
+							const span = select('span:not(.indent)', line);
+							const firstChild = span?.children[0];
+							if (firstChild?.type === 'text') {
+								firstChild.value = `${marker}${firstChild.value}`;
 							}
 						}
 					}
