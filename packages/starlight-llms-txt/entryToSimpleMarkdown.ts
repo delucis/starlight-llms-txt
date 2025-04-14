@@ -87,9 +87,7 @@ const htmlToMarkdownPipeline = unified()
 					const diffLines =
 						pre.properties.dataLanguage === 'diff'
 							? []
-							: code.children.filter(
-									(child) => matches('div.ec-line.ins', child) || matches('div.ec-line.del', child)
-							  );
+							: code.children.filter((child) => matches('div.ec-line.ins, div.ec-line.del', child));
 					if (diffLines.length === 0) {
 						code.properties.className.push(`language-${pre.properties.dataLanguage}`);
 					} else {
