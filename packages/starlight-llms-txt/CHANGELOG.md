@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.5.1
+
+### Patch Changes
+
+- [#22](https://github.com/delucis/starlight-llms-txt/pull/22) [`2a8102a`](https://github.com/delucis/starlight-llms-txt/commit/2a8102a2554ac80495568b89acba2bb5a437d206) Thanks [@florian-lefebvre](https://github.com/florian-lefebvre)! - Fixes output of Expressive Code `diff` codeblocks with a `lang` attribute
+
 ## 0.5.0
 
 ### Minor Changes
