@@ -83,7 +83,27 @@ const htmlToMarkdownPipeline = unified()
 				// This is what `hast-util-to-mdast` checks for code language metadata.
 				if (pre?.properties.dataLanguage && code) {
 					if (!Array.isArray(code.properties.className)) code.properties.className = [];
-					code.properties.className.push(`language-${pre.properties.dataLanguage}`);
+
+					const diffLines =
+						pre.properties.dataLanguage === 'diff'
+							? []
+							: code.children.filter((child) => matches('div.ec-line.ins, div.ec-line.del', child));
+					if (diffLines.length === 0) {
+						code.properties.className.push(`language-${pre.properties.dataLanguage}`);
+					} else {
+						code.properties.className.push('language-diff');
+						for (const line of diffLines) {
+							if (line.type !== 'element') continue;
+							const classes = line.properties?.className;
+							if (typeof classes !== 'string' && !Array.isArray(classes)) continue;
+							const marker = classes.includes('ins') ? '+' : '-';
+							const span = select('span:not(.indent)', line);
+							const firstChild = span?.children[0];
+							if (firstChild?.type === 'text') {
+								firstChild.value = `${marker}${firstChild.value}`;
+							}
+						}
+					}
 				}
 			}
 		};
