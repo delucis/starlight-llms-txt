@@ -153,6 +153,25 @@ In the following example, a specific, outdated page is excluded as well as all p
 exclude: ['old-page', 'tutorial/**'],
 ```
 
+### `rawMDX`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+When enabled, returns raw content without processing MDX components.
+This skips the HTML rendering and markdown conversion pipeline for faster processing.
+Useful when you want to preserve the original markdown content without component processing.
+
+This option is particularly helpful for:
+
+- Large documentation sites where processing time is a concern
+- Content that doesn't use MDX components and you want to preserve the original markdown
+- Debugging content issues by seeing the raw source
+
+```ts
+rawMDX: true,
+```
+
 ### `minify`
 
 A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.
@@ -236,4 +255,3 @@ The separator used when concatenating page entries together.
 ```ts
 pageSeparator: '\n----------\n',
 ```
-

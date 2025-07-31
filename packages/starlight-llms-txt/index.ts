@@ -53,6 +53,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								defaultLocale: config.defaultLocale,
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
+								rawMDX: opts.rawMDX ?? false,
 							};
 
 							const modules = {

@@ -29,6 +29,7 @@ export interface ProjectContext {
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
+	rawMDX: NonNullable<StarlightLllmsTextOptions['rawMDX']>;
 }
 
 /** Plugin user options. */
@@ -174,4 +175,13 @@ export interface StarlightLllmsTextOptions {
 	 * @default "\n\n"
 	 */
 	pageSeparator?: string;
+
+	/**
+	 * When enabled, returns raw content without processing MDX components.
+	 * This skips the HTML rendering and markdown conversion pipeline for faster processing.
+	 * Useful when you want to preserve the original markdown content without component processing.
+	 *
+	 * @default false
+	 */
+	rawMDX?: boolean;
 }
