@@ -29,7 +29,7 @@ export interface ProjectContext {
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
-	rawMDX: NonNullable<StarlightLllmsTextOptions['rawMDX']>;
+	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
 }
 
 /** Plugin user options. */
@@ -183,5 +183,5 @@ export interface StarlightLllmsTextOptions {
 	 *
 	 * @default false
 	 */
-	rawMDX?: boolean;
+	rawContent?: boolean;
 }

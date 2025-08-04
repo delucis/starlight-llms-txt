@@ -169,11 +169,13 @@ export async function entryToSimpleMarkdown(
 	context: APIContext,
 	shouldMinify: boolean = false
 ) {
-	const { rawMDX } = starlightLllmsTxtContext;
+	const { rawContent } = starlightLllmsTxtContext;
 
-	// if this is an MDX file or contains framework components and rawMDX is enabled
-	if (entry.id.endsWith('.mdx') || rawMDX) {
-		// For MDX files or when rawMDX is enabled, return the raw body content directly
+	// skip processing if the `rawContent` option is enabled
+	// helps with MDX (Astro containers don't support multiple renderers yet)
+	// and speeds up processing for large sites
+	if (rawContent) {
+		// return the raw body content directly
 		return entry.body || '';
 	}
 

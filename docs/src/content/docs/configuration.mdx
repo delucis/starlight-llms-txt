@@ -153,23 +153,17 @@ In the following example, a specific, outdated page is excluded as well as all p
 exclude: ['old-page', 'tutorial/**'],
 ```
 
-### `rawMDX`
+### `rawContent`
 
 **Type:** `boolean`  
 **Default:** `false`
 
-When enabled, returns raw content without processing MDX components.
-This skips the HTML rendering and markdown conversion pipeline for faster processing.
-Useful when you want to preserve the original markdown content without component processing.
+When enabled, returns raw markdown content without processing. Useful for large documentation sites where processing time is a concern.
 
-This option is particularly helpful for:
-
-- Large documentation sites where processing time is a concern
-- Content that doesn't use MDX components and you want to preserve the original markdown
-- Debugging content issues by seeing the raw source
+This is necessary if you haveMDX files that use UI frameworks (React, Vue, etc).
 
 ```ts
-rawMDX: true,
+rawContent: true,
 ```
 
 ### `minify`
