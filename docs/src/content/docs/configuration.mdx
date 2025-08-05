@@ -153,6 +153,19 @@ In the following example, a specific, outdated page is excluded as well as all p
 exclude: ['old-page', 'tutorial/**'],
 ```
 
+### `rawContent`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+When enabled, returns raw Markdown content without processing. Useful for large documentation sites where processing time is a concern.
+
+You must enable the `rawContent` option if your content includes components built with UI frameworks like React, Vue, Svelte, etc.
+
+```ts
+rawContent: true,
+```
+
 ### `minify`
 
 A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.
@@ -236,4 +249,3 @@ The separator used when concatenating page entries together.
 ```ts
 pageSeparator: '\n----------\n',
 ```
-

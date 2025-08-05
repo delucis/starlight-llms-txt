@@ -169,6 +169,16 @@ export async function entryToSimpleMarkdown(
 	context: APIContext,
 	shouldMinify: boolean = false
 ) {
+	const { rawContent } = starlightLllmsTxtContext;
+
+	// Skip processing if the `rawContent` option is enabled.
+	// This helps with UI framework components (we don't support renderers for these yet)
+	// and speeds up processing for large sites.
+	if (rawContent) {
+		// Return the raw body content directly.
+		return entry.body || '';
+	}
+
 	const { Content } = await render(entry);
 	const html = await astroContainer.renderToString(Content, context);
 	const file = await htmlToMarkdownPipeline.process({
