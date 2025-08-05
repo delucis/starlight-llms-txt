@@ -158,9 +158,9 @@ exclude: ['old-page', 'tutorial/**'],
 **Type:** `boolean`  
 **Default:** `false`
 
-When enabled, returns raw markdown content without processing. Useful for large documentation sites where processing time is a concern.
+When enabled, returns raw Markdown content without processing. Useful for large documentation sites where processing time is a concern.
 
-This is necessary if you haveMDX files that use UI frameworks (React, Vue, etc).
+You must enable the `rawContent` option if your content includes components built with UI frameworks like React, Vue, Svelte, etc.
 
 ```ts
 rawContent: true,

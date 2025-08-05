@@ -178,8 +178,8 @@ export interface StarlightLllmsTextOptions {
 
 	/**
 	 * When enabled, returns raw content without processing MDX components.
-	 * This skips the HTML rendering and markdown conversion pipeline for faster processing.
-	 * Useful when you want to preserve the original markdown content without component processing.
+	 * This skips the HTML rendering and Markdown conversion pipeline for faster processing.
+	 * Useful when you want to preserve the original Markdown content without component processing.
 	 *
 	 * @default false
 	 */

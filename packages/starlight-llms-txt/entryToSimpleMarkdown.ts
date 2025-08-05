@@ -171,11 +171,11 @@ export async function entryToSimpleMarkdown(
 ) {
 	const { rawContent } = starlightLllmsTxtContext;
 
-	// skip processing if the `rawContent` option is enabled
-	// helps with MDX (Astro containers don't support multiple renderers yet)
-	// and speeds up processing for large sites
+	// Skip processing if the `rawContent` option is enabled.
+	// This helps with UI framework components (we don't support renderers for these yet)
+	// and speeds up processing for large sites.
 	if (rawContent) {
-		// return the raw body content directly
+		// Return the raw body content directly.
 		return entry.body || '';
 	}
 
