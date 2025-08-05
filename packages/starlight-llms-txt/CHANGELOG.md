@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.6.0
+
+### Minor Changes
+
+- [#30](https://github.com/delucis/starlight-llms-txt/pull/30) [`a1650c9`](https://github.com/delucis/starlight-llms-txt/commit/a1650c92b16377d9abdcccc8b2a68b34bc695796) Thanks [@alvinometric](https://github.com/alvinometric)! - Adds a new `rawContent` option to skip the Markdown processing pipeline
+
 ## 0.5.1
 
 ### Patch Changes
