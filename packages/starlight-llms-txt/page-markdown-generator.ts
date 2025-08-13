@@ -7,7 +7,7 @@ import { entryToSimpleMarkdown } from './entryToSimpleMarkdown';
 import { isDefaultLocale } from './utils';
 
 /**
- * Generates markdown content for a single documentation page.
+ * Generates Markdown content for a single documentation page.
  */
 export async function generatePageMarkdown(
 	context: APIContext,
@@ -30,13 +30,13 @@ export async function generatePageMarkdown(
 		return null;
 	}
 
-	// Generate markdown content for the page
+	// Generate Markdown content for the page
 	const content = await generateMarkdownForEntry(doc, context);
 	return content;
 }
 
 /**
- * Generates markdown content for a single collection entry.
+ * Generates Markdown content for a single collection entry.
  */
 async function generateMarkdownForEntry(
 	doc: CollectionEntry<'docs'>,
@@ -53,7 +53,7 @@ async function generateMarkdownForEntry(
 		segments.push(`> ${description}`);
 	}
 
-	// Convert the content to markdown
+	// Convert the content to Markdown
 	const markdown = await entryToSimpleMarkdown(doc, context, false);
 	segments.push(markdown);
 

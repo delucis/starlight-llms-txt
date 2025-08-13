@@ -34,10 +34,7 @@ export default defineConfig({
 					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
-					pageSeparator: `
-
-
-`,
+					pageSeparator: `\n\n\n`,
 					// Enable individual markdown file generation
 					generatePageMarkdown: true,
 					markdownFilePattern: 'append',

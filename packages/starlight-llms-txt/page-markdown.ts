@@ -60,7 +60,7 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 
 /**
- * Route that generates individual markdown files for each documentation page.
+ * Route that generates individual Markdown files for each documentation page.
  */
 export const GET: APIRoute<Props, Params> = async (context) => {
 	const { generatePageMarkdown: generatePageMarkdownEnabled } = starlightLllmsTxtContext;
@@ -73,14 +73,14 @@ export const GET: APIRoute<Props, Params> = async (context) => {
 	// Get the original slug from props
 	const originalSlug = context.props.originalSlug;
 
-	// Generate the markdown content
+	// Generate the Markdown content
 	const content = await generatePageMarkdown(context, originalSlug);
 
 	if (!content) {
 		return new Response('Not Found', { status: 404 });
 	}
 
-	// Return the markdown content with appropriate headers
+	// Return the Markdown content with appropriate headers
 	return new Response(content, {
 		headers: {
 			'Content-Type': 'text/plain; charset=utf-8',

@@ -189,7 +189,7 @@ export interface StarlightLllmsTextOptions {
 	rawContent?: boolean;
 
 	/**
-	 * Enable generation of individual markdown (.md) files for each documentation page.
+	 * Enable generation of individual Markdown (.md) files for each documentation page.
 	 * This implements the second part of the llmstxt.org standard proposal.
 	 *
 	 * @default false
@@ -197,7 +197,7 @@ export interface StarlightLllmsTextOptions {
 	generatePageMarkdown?: boolean;
 
 	/**
-	 * File naming pattern for individual markdown files.
+	 * File naming pattern for individual Markdown files.
 	 * - 'append': Adds .md to the existing URL (e.g., /docs/getting-started.html.md)
 	 * - 'replace': Replaces the extension with .md (e.g., /docs/getting-started.md)
 	 *

@@ -35,7 +35,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/_llms-txt/[slug].txt',
 							});
 
-							// Inject the individual page markdown route if enabled
+							// Inject the individual page Markdown route if enabled
 							if (opts.generatePageMarkdown !== false) {
 								injectRoute({
 									entrypoint: new URL('./page-markdown.ts', import.meta.url),
