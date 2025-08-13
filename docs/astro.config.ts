@@ -19,7 +19,7 @@ export default defineConfig({
 			plugins: [
 				starlightLlmsTxt({
 					description:
-						'starlight-llms-txt is a plugin for the Starlight documentation website framework that auto-generates llms.txt context files for large language models based on a documentation site’s content.',
+						'starlight-llms-txt is a plugin for the Starlight documentation website framework that auto-generates llms.txt context files for large language models based on a documentation site\'s content.',
 					optionalLinks: [
 						{
 							label: 'The /llms.txt file',
@@ -34,7 +34,14 @@ export default defineConfig({
 					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
-					pageSeparator: `\n\n\n`
+					pageSeparator: `
+
+
+`,
+					// Enable individual markdown file generation
+					generatePageMarkdown: true,
+					markdownFilePattern: 'append',
+					excludePages: ['404', 'search']
 				}),
 			],
 			sidebar: ['getting-started', 'configuration'],

@@ -35,6 +35,14 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/_llms-txt/[slug].txt',
 							});
 
+							// Inject the individual page markdown route if enabled
+							if (opts.generatePageMarkdown !== false) {
+								injectRoute({
+									entrypoint: new URL('./page-markdown.ts', import.meta.url),
+									pattern: '/[...slug].md',
+								});
+							}
+
 							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
 								base: astroConfig.base,
@@ -54,6 +62,9 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
+								generatePageMarkdown: opts.generatePageMarkdown ?? false,
+								markdownFilePattern: opts.markdownFilePattern ?? 'append',
+								excludePages: opts.excludePages ?? ['404', 'search'],
 							};
 
 							const modules = {
