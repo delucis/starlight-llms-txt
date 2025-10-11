@@ -24,11 +24,11 @@
 	},
 	"devDependencies": {
 		"@astrojs/starlight": "^0.31.0",
-		"astro": "^5.13.1"
+		"astro": "^5.14.3"
 	},
 	"peerDependencies": {
 		"@astrojs/starlight": ">=0.31",
-		"astro": "^5.13.1"
+		"astro": "^5.14.3"
 	},
 	"engines": {
 		"node": "^18.17.1 || ^20.3.0 || >=21.0.0"
