@@ -9,7 +9,7 @@
 	"rangeStrategy": "bump",
 	"ignorePaths": ["**/node_modules/**"],
 	"minimumReleaseAge": "3 days",
-  "schedule" ["* * * * 5"],
+	"schedule": ["* * * * 5"],
 	"postUpdateOptions": ["pnpmDedupe"],
 	"packageRules": [
 		{
