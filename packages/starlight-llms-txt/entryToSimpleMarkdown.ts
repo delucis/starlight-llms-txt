@@ -161,21 +161,12 @@ const htmlToMarkdownPipeline = unified()
 	})
 	.use(function removeHeadingAnchorLinks() {
 		return (tree) => {
-			const headings = selectAll(
-				'h1, h2, h3, h4, h5, h6',
-				tree as Parameters<typeof selectAll>[1]
-			);
-			for (const heading of headings) {
-				if (heading.type !== 'element') continue;
-				const headingId = heading.properties?.id;
-				if (typeof headingId !== 'string' || !headingId) continue;
-				// Remove autolinked heading anchors (e.g. “Section titled …”) to avoid extra links in output.
-				remove(heading, (node) => {
-					if (node.type !== 'element' || node.tagName !== 'a') return false;
-					const href = node.properties?.href;
-					return typeof href === 'string' && href === `#${headingId}`;
-				});
-			}
+			// Remove Starlight's heading anchor links (e.g. "Section titled …").
+			// These are sibling <a> elements next to headings inside .sl-heading-wrapper divs.
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				return matches('a.sl-anchor-link', node);
+			});
 		};
 	})
 	.use(rehypeRemark)
