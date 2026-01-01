@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { ensureTrailingSlash, getSiteTitle } from './utils';
 
+// Explicitly set this to prerender so it works the same way for sites in `server` mode.
+export const prerender = true;
 /**
  * Route that generates an introductory summary of this site for LLMs.
  */

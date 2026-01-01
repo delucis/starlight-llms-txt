@@ -7,6 +7,9 @@ import type {
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { generateLlmsTxt } from './generator';
 
+// Explicitly set this to prerender so it works the same way for sites in `server` mode.
+export const prerender = true;
+
 export const getStaticPaths = (() => {
 	return starlightLllmsTxtContext.customSets.map(({ label, description, paths, slug }) => ({
 		params: { slug },
