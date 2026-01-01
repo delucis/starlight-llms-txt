@@ -9,9 +9,13 @@ export default defineConfig({
 		starlight({
 			title: 'starlight-llms-txt',
 			description: 'Generate llms.txt context files for your Starlight documentation site',
-			social: {
-				github: 'https://github.com/delucis/starlight-llms-txt',
-			},
+			social: [
+				{
+					icon: 'github',
+					label: 'GitHub repository',
+					href: 'https://github.com/delucis/starlight-llms-txt',
+				},
+			],
 			editLink: {
 				baseUrl: 'https://github.com/delucis/starlight-llms-txt/edit/main/docs/',
 			},
@@ -34,7 +38,7 @@ export default defineConfig({
 					],
 					// Exclude landing page from llms-small.txt
 					exclude: ['index'],
-					pageSeparator: `\n\n\n`
+					pageSeparator: `\n\n\n`,
 				}),
 			],
 			sidebar: ['getting-started', 'configuration'],
