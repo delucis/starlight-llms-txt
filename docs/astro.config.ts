@@ -9,9 +9,13 @@ export default defineConfig({
 		starlight({
 			title: 'starlight-llms-txt',
 			description: 'Generate llms.txt context files for your Starlight documentation site',
-			social: {
-				github: 'https://github.com/delucis/starlight-llms-txt',
-			},
+			social: [
+				{
+					icon: 'github',
+					label: 'GitHub repository',
+					href: 'https://github.com/delucis/starlight-llms-txt',
+				},
+			],
 			editLink: {
 				baseUrl: 'https://github.com/delucis/starlight-llms-txt/edit/main/docs/',
 			},

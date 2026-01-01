@@ -1,6 +1,6 @@
 {
 	"name": "starlight-llms-txt",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"license": "MIT",
 	"description": "Generate llms.txt files to train large language models on your Starlight documentation website",
 	"author": "delucis",
@@ -9,26 +9,26 @@
 		".": "./index.ts"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "^4.0.5",
+		"@astrojs/mdx": "^4.3.13",
 		"@types/hast": "^3.0.4",
-		"@types/micromatch": "^4.0.9",
+		"@types/micromatch": "^4.0.10",
 		"github-slugger": "^2.0.0",
-		"hast-util-select": "^6.0.3",
+		"hast-util-select": "^6.0.4",
 		"micromatch": "^4.0.8",
 		"rehype-parse": "^9.0.1",
-		"rehype-remark": "^10.0.0",
-		"remark-gfm": "^4.0.0",
+		"rehype-remark": "^10.0.1",
+		"remark-gfm": "^4.0.1",
 		"remark-stringify": "^11.0.0",
 		"unified": "^11.0.5",
 		"unist-util-remove": "^4.0.0"
 	},
 	"devDependencies": {
-		"@astrojs/starlight": "^0.31.0",
-		"astro": "^5.13.1"
+		"@astrojs/starlight": "^0.37.1",
+		"astro": "^5.16.6"
 	},
 	"peerDependencies": {
 		"@astrojs/starlight": ">=0.31",
-		"astro": "^5.13.1"
+		"astro": "^5.15.9"
 	},
 	"engines": {
 		"node": "^18.17.1 || ^20.3.0 || >=21.0.0"
