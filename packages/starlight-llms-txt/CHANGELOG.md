@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.6.1
+
+### Patch Changes
+
+- [#49](https://github.com/delucis/starlight-llms-txt/pull/49) [`56b8233`](https://github.com/delucis/starlight-llms-txt/commit/56b823325bd42374300597a82b0f04e289be4b25) Thanks [@delucis](https://github.com/delucis)! - No code changes. This release is the first published using OIDC trusted publisher configuration for improved security.
+
 ## 0.6.0
 
 ### Minor Changes
