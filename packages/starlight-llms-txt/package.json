@@ -1,6 +1,6 @@
 {
 	"name": "starlight-llms-txt",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"license": "MIT",
 	"description": "Generate llms.txt files to train large language models on your Starlight documentation website",
 	"author": "delucis",
