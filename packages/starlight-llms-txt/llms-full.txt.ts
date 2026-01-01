@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { generateLlmsTxt } from './generator';
 import { getSiteTitle } from './utils';
 
@@ -13,6 +14,7 @@ export const GET: APIRoute = async (context) => {
 	const body = await generateLlmsTxt(context, {
 		minify: false,
 		description: `This is the full developer documentation for ${getSiteTitle()}`,
+	    exclude: starlightLllmsTxtContext.exclude,
 	});
 	return new Response(body);
 };
