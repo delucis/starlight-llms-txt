@@ -40,9 +40,7 @@ export default defineConfig({
 					exclude: ['index'],
 					pageSeparator: `\n\n\n`,
 					// Enable individual markdown file generation
-					generatePageMarkdown: true,
-					markdownFilePattern: 'append',
-					excludePages: ['404', 'search']
+					perPageMarkdown: true
 				}),
 			],
 			sidebar: ['getting-started', 'configuration'],

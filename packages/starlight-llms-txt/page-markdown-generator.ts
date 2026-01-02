@@ -13,10 +13,10 @@ export async function generatePageMarkdown(
 	context: APIContext,
 	slug: string
 ): Promise<string | null> {
-	const { excludePages } = starlightLllmsTxtContext;
+	const { perPageMarkdown } = starlightLllmsTxtContext;
 
 	// Check if this page should be excluded
-	if (excludePages && micromatch.isMatch(slug, excludePages)) {
+	if (micromatch.isMatch(slug, perPageMarkdown.excludePages)) {
 		return null;
 	}
 
@@ -64,16 +64,13 @@ async function generateMarkdownForEntry(
  * Get all documentation page slugs for static path generation.
  */
 export async function getAllPageSlugs(): Promise<string[]> {
-	const { excludePages } = starlightLllmsTxtContext;
+	const { perPageMarkdown } = starlightLllmsTxtContext;
 
 	// Get all docs from the collection
 	const docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
 
 	// Filter out excluded pages
-	let slugs = docs.map((doc) => doc.id);
-	if (excludePages) {
-		slugs = slugs.filter((slug) => !micromatch.isMatch(slug, excludePages));
-	}
-
-	return slugs;
+	return docs
+		.map((doc) => doc.id)
+		.filter((slug) => !micromatch.isMatch(slug, perPageMarkdown.excludePages));
 }

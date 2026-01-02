@@ -8,10 +8,10 @@ import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { generatePageMarkdown, getAllPageSlugs } from './page-markdown-generator';
 
 export const getStaticPaths = (async () => {
-	const { generatePageMarkdown: generatePageMarkdownEnabled, markdownFilePattern } = starlightLllmsTxtContext;
+	const { perPageMarkdown } = starlightLllmsTxtContext;
 
 	// Only generate paths if the feature is enabled
-	if (!generatePageMarkdownEnabled) {
+	if (!perPageMarkdown.enabled) {
 		return [];
 	}
 
@@ -23,7 +23,7 @@ export const getStaticPaths = (async () => {
 		const urlPaths = [];
 
 		// Handle different URL patterns
-		if (markdownFilePattern === 'replace') {
+		if (perPageMarkdown.extensionStrategy === 'replace') {
 			// Simple .md replacement pattern
 			urlPaths.push({
 				params: { slug: slug === 'index' ? undefined : slug },
@@ -38,11 +38,7 @@ export const getStaticPaths = (async () => {
 					props: { originalSlug: slug },
 				});
 			} else {
-				// For regular pages, support both clean URL and .html.md patterns
-				urlPaths.push({
-					params: { slug },
-					props: { originalSlug: slug },
-				});
+				// For regular pages
 				urlPaths.push({
 					params: { slug: `${slug}.html` },
 					props: { originalSlug: slug },
@@ -63,13 +59,6 @@ type Params = InferGetStaticParamsType<typeof getStaticPaths>;
  * Route that generates individual Markdown files for each documentation page.
  */
 export const GET: APIRoute<Props, Params> = async (context) => {
-	const { generatePageMarkdown: generatePageMarkdownEnabled } = starlightLllmsTxtContext;
-
-	// Return 404 if the feature is disabled
-	if (!generatePageMarkdownEnabled) {
-		return new Response('Not Found', { status: 404 });
-	}
-
 	// Get the original slug from props
 	const originalSlug = context.props.originalSlug;
 
