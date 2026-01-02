@@ -10,29 +10,10 @@ import { isDefaultLocale } from './utils';
  * Generates Markdown content for a single documentation page.
  */
 export async function generatePageMarkdown(
-	context: APIContext,
-	slug: string
-): Promise<string | null> {
-	const { perPageMarkdown } = starlightLllmsTxtContext;
-
-	// Check if this page should be excluded
-	if (micromatch.isMatch(slug, perPageMarkdown.excludePages)) {
-		return null;
-	}
-
-	// Get all docs from the collection
-	const docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
-
-	// Find the matching doc by slug
-	const doc = docs.find((d) => d.id === slug || d.slug === slug);
-
-	if (!doc) {
-		return null;
-	}
-
-	// Generate Markdown content for the page
-	const content = await generateMarkdownForEntry(doc, context);
-	return content;
+	doc: CollectionEntry<'docs'>,
+	context: APIContext
+): Promise<string> {
+	return generateMarkdownForEntry(doc, context);
 }
 
 /**
@@ -61,16 +42,14 @@ async function generateMarkdownForEntry(
 }
 
 /**
- * Get all documentation page slugs for static path generation.
+ * Get all documentation pages for static path generation.
  */
-export async function getAllPageSlugs(): Promise<string[]> {
-	const { perPageMarkdown } = starlightLllmsTxtContext;
-
-	// Get all docs from the collection
-	const docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
-
-	// Filter out excluded pages
-	return docs
-		.map((doc) => doc.id)
-		.filter((slug) => !micromatch.isMatch(slug, perPageMarkdown.excludePages));
+export async function getAllPages(): Promise<CollectionEntry<'docs'>[]> {
+	return getCollection(
+		'docs',
+		(doc) =>
+			isDefaultLocale(doc) &&
+			!doc.data.draft &&
+			!micromatch.isMatch(doc.id, starlightLllmsTxtContext.perPageMarkdown.excludePages)
+	);
 }

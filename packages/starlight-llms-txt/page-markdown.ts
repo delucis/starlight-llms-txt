@@ -4,8 +4,9 @@ import type {
 	InferGetStaticParamsType,
 	InferGetStaticPropsType,
 } from 'astro';
+import type { CollectionEntry } from 'astro:content';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
-import { generatePageMarkdown, getAllPageSlugs } from './page-markdown-generator';
+import { generatePageMarkdown, getAllPages } from './page-markdown-generator';
 
 export const getStaticPaths = (async () => {
 	const { perPageMarkdown } = starlightLllmsTxtContext;
@@ -15,38 +16,40 @@ export const getStaticPaths = (async () => {
 		return [];
 	}
 
-	// Get all page slugs
-	const slugs = await getAllPageSlugs();
+	// Get all pages
+	const pages = await getAllPages();
 
 	// Generate paths based on the file pattern
-	const paths = slugs.flatMap((slug) => {
-		const urlPaths = [];
+	const paths = pages.flatMap((doc) => {
+		const slug = doc.id;
 
 		// Handle different URL patterns
 		if (perPageMarkdown.extensionStrategy === 'replace') {
 			// Simple .md replacement pattern
-			urlPaths.push({
-				params: { slug: slug === 'index' ? undefined : slug },
-				props: { originalSlug: slug },
-			});
+			return [
+				{
+					params: { slug: slug === 'index' ? undefined : slug },
+					props: { doc },
+				},
+			];
 		} else {
 			// 'append' pattern - add .html.md
-			// For index pages
 			if (slug === 'index') {
-				urlPaths.push({
-					params: { slug: 'index.html' },
-					props: { originalSlug: slug },
-				});
+				return [
+					{
+						params: { slug: 'index.html' },
+						props: { doc },
+					},
+				];
 			} else {
-				// For regular pages
-				urlPaths.push({
-					params: { slug: `${slug}.html` },
-					props: { originalSlug: slug },
-				});
+				return [
+					{
+						params: { slug: `${slug}.html` },
+						props: { doc },
+					},
+				];
 			}
 		}
-
-		return urlPaths;
 	});
 
 	return paths;
@@ -59,15 +62,8 @@ type Params = InferGetStaticParamsType<typeof getStaticPaths>;
  * Route that generates individual Markdown files for each documentation page.
  */
 export const GET: APIRoute<Props, Params> = async (context) => {
-	// Get the original slug from props
-	const originalSlug = context.props.originalSlug;
-
-	// Generate the Markdown content
-	const content = await generatePageMarkdown(context, originalSlug);
-
-	if (!content) {
-		return new Response('Not Found', { status: 404 });
-	}
+	// Generate the Markdown content using the doc from props
+	const content = await generatePageMarkdown(context.props.doc, context);
 
 	// Return the Markdown content with appropriate headers
 	return new Response(content, {
