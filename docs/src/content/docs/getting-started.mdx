@@ -3,7 +3,7 @@ title: Getting Started
 description: How to install and set-up starlight-llms-txt in your Starlight docs site
 ---
 
-`starlight-llms-txt` is a plugin for the [Starlight](https://starlight.astro.build/) documentation website framework that auto-generates `llms.txt`, `llms-full.txt`, and `llms-small.txt` context files for large language models based on your documentation site's content. It also generates individual Markdown files for each page, fully implementing the [llmstxt.org standard](https://llmstxt.org/#proposal).
+`starlight-llms-txt` is a plugin for the [Starlight](https://starlight.astro.build/) documentation website framework that auto-generates `llms.txt`, `llms-full.txt`, and `llms-small.txt` context files for large language models based on your documentation site's content. It can also generate individual Markdown files for every docs page.
 
 You can learn more about `llms.txt` files at [llmstxt.org](https://llmstxt.org/).
 
@@ -14,8 +14,8 @@ If you don't have one yet, you can follow the ["Getting Started"](https://starli
 
 ## Installation
 
-import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
-import { PackageManagers } from 'starlight-package-managers';
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+import { PackageManagers } from "starlight-package-managers";
 
 <Steps>
 
@@ -46,7 +46,7 @@ import { PackageManagers } from 'starlight-package-managers';
 
    <PackageManagers type="run" args="dev" />
 
-4. Visit [`localhost:4321/llms.txt`](http://localhost:4321/llms.txt) to preview the plugin in action. Individual page Markdown files are also available at URLs like [`localhost:4321/getting-started.md`](http://localhost:4321/getting-started.md).
+4. Visit [`localhost:4321/llms.txt`](http://localhost:4321/llms.txt) to preview the plugin in action.
 
 </Steps>
 
