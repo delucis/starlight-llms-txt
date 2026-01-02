@@ -1,14 +1,6 @@
 # `starlight-llms-txt`
 
-Generate `llms.txt` files and individual Markdown pages to train large language models on your Starlight documentation website.
-
-## Features
-
-- **Full llmstxt.org compliance**: Implements both recommendations from the standard
-- **Multiple output formats**: Generate `llms.txt`, `llms-full.txt`, `llms-small.txt`
-- **Individual page Markdown**: Generate clean `.md` files for each documentation page
-- **Flexible configuration**: Customize output with various options
-- **Custom content sets**: Create specialized subsets of your documentation
+Generate `llms.txt` files to train large language models on your Starlight documentation website.
 
 ## Documentation
 
