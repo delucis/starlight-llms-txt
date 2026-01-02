@@ -16,23 +16,23 @@ interface CustomSet extends CustomSetUserConfig {
 
 /** Project configuration metadata passed from the integration to the routes in a virtual module. */
 export interface ProjectContext {
-	base: string | undefined;
-	title: string;
-	description?: string;
-	details?: string;
+	base: AstroConfig['base'];
+	defaultLocale: StarlightUserConfig['defaultLocale'];
+	locales: StarlightUserConfig['locales'];
+	title: StarlightUserConfig['title'];
+	description: StarlightUserConfig['description'];
+	details: StarlightLllmsTextOptions['details'];
 	optionalLinks: NonNullable<StarlightLllmsTextOptions['optionalLinks']>;
-	customSets: CustomSet[];
+	customSets: Array<CustomSet>;
 	minify: NonNullable<StarlightLllmsTextOptions['minify']>;
 	promote: NonNullable<StarlightLllmsTextOptions['promote']>;
 	demote: NonNullable<StarlightLllmsTextOptions['demote']>;
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
-	defaultLocale: { label?: string; lang?: string; dir?: 'ltr' | 'rtl' } | undefined;
-	locales: StarlightConfig['locales'];
-	pageSeparator: string;
-	rawContent: boolean;
-	generatePageMarkdown: boolean;
-	markdownFilePattern: 'append' | 'replace';
-	excludePages: string[];
+	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
+	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
+	generatePageMarkdown: NonNullable<StarlightLllmsTextOptions['generatePageMarkdown']>;
+	markdownFilePattern: NonNullable<StarlightLllmsTextOptions['markdownFilePattern']>;
+	excludePages: NonNullable<StarlightLllmsTextOptions['excludePages']>;
 }
 
 /** Plugin user options. */
@@ -41,7 +41,7 @@ export interface StarlightLllmsTextOptions {
 	 * Provide a custom name for this project or software. This will be used in `llms.txt` to identify
 	 * what the documentation is for.
 	 *
-	 * Default: the value of Starlight's `title` option.
+	 * Default: the value of Starlight’s `title` option.
 	 *
 	 * @example "FastHTML"
 	 */
@@ -49,14 +49,14 @@ export interface StarlightLllmsTextOptions {
 
 	/**
 	 * Set a custom description for your documentation site to share with large language models.
-	 * Can include Markdown syntax. Will be displayed in `llms.txt` immediately after the file's title.
+	 * Can include Markdown syntax. Will be displayed in `llms.txt` immediately after the file’s title.
 	 *
 	 * According to <https://llmstxt.org/> this should be:
 	 *
 	 * > a short summary of the project, containing key information necessary for understanding the
 	 * > rest of the file
 	 *
-	 * Default: The value of Starlight's `description` option.
+	 * Default: The value of Starlight’s `description` option.
 	 *
 	 * @example
 	 * ```md
@@ -175,7 +175,7 @@ export interface StarlightLllmsTextOptions {
 
 	/**
 	 * String used to separate pages in the generated text.
-	 * @default "\\n\\n"
+	 * @default "\n\n"
 	 */
 	pageSeparator?: string;
 
@@ -208,11 +208,11 @@ export interface StarlightLllmsTextOptions {
 	/**
 	 * Page IDs to exclude from individual .md file generation. Supports glob patterns.
 	 *
-	 * @default ['404', 'search']
+	 * @default ['404']
 	 *
 	 * @example
 	 * // Exclude specific pages from .md generation
-	 * excludePages: ['404', 'search', 'admin/**'],
+	 * excludePages: ['404', 'admin/**'],
 	 */
 	excludePages?: string[];
 }
