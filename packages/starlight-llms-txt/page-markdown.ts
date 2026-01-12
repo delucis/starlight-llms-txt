@@ -28,7 +28,7 @@ export const getStaticPaths = (async () => {
 			// Simple .md replacement pattern
 			return [
 				{
-					params: { slug: slug === 'index' ? undefined : slug },
+					params: { slug },
 					props: { doc },
 				},
 			];
