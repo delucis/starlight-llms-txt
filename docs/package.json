@@ -17,7 +17,7 @@
     "astro": "^5.16.8",
     "sharp": "^0.34.5",
     "starlight-llms-txt": "workspace:*",
-    "starlight-package-managers": "^0.11.1"
+    "starlight-package-managers": "^0.12.0"
   },
   "engines": {
     "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
