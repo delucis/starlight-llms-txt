@@ -171,7 +171,10 @@ const htmlToMarkdownPipeline = unified()
 	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
-	.use(remarkStringify);
+	.use(remarkStringify, {
+		emphasis: '*',
+		strong: '*',
+	});
 
 /** Render a content collection entry to HTML and back to Markdown to support rendering and simplifying MDX components */
 export async function entryToSimpleMarkdown(
