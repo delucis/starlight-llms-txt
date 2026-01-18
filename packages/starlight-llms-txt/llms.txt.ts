@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
-import { ensureTrailingSlash, getSiteTitle } from './utils';
+import { getDocsEntries } from './docsEntries';
+import { defaultLang, docEntryToMarkdownSlug, ensureTrailingSlash, getSiteTitle } from './utils';
 
 // Explicitly set this to prerender so it works the same way for sites in `server` mode.
 export const prerender = true;
@@ -33,6 +34,29 @@ export const GET: APIRoute = async (context) => {
 			),
 		].join('\n')
 	);
+
+	const docs = await getDocsEntries();
+	const collator = new Intl.Collator(defaultLang);
+	docs.sort((a, b) => collator.compare(a.id, b.id));
+	const pages = docs
+		.map((doc) => {
+			const slug = docEntryToMarkdownSlug(doc);
+			if (slug.endsWith('.md')) {
+				console.warn(
+					`starlight-llms-txt: Skipping per-page markdown for "${doc.id}" because its slug "${slug}" would conflict with .md output.`
+				);
+				return null;
+			}
+			const markdownPath = `${ensureTrailingSlash(starlightLllmsTxtContext.base)}${slug}.md`;
+			const title = doc.data.hero?.title || doc.data.title;
+			const description = doc.data.hero?.tagline || doc.data.description;
+			return `- [${title}](${markdownPath})${description ? `: ${description}` : ''}`;
+		})
+		.filter((line): line is string => Boolean(line));
+	if (pages.length > 0) {
+		segments.push('## Pages');
+		segments.push(pages.join('\n'));
+	}
 
 	// Additional notes.
 	segments.push(`## Notes`);
