@@ -151,12 +151,22 @@ const htmlToMarkdownPipeline = unified()
 		return (tree) => {
 			const trees = selectAll('starlight-file-tree', tree as Parameters<typeof selectAll>[1]);
 			for (const tree of trees) {
-				// Remove “Directory” screen reader labels from <FileTree> entries.
+				// Remove "Directory" screen reader labels from <FileTree> entries.
 				remove(tree, (_node) => {
 					const node = _node as RootContent;
 					return matches('.sr-only', node);
 				});
 			}
+		};
+	})
+	.use(function removeHeadingAnchorLinks() {
+		return (tree) => {
+			// Remove Starlight's heading anchor links (e.g. "Section titled …").
+			// These are sibling <a> elements next to headings inside .sl-heading-wrapper divs.
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				return matches('a.sl-anchor-link', node);
+			});
 		};
 	})
 	.use(rehypeRemark)
