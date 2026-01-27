@@ -60,7 +60,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
-							disableLlmsFull: opts.disableLlmsFull ?? false,
+								disableLlmsFull: opts.disableLlmsFull ?? false,
 							};
 
 							const modules = {
