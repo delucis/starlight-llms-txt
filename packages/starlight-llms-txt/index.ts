@@ -23,11 +23,13 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/llms.txt',
 								prerender: true,
 							});
+						if (!opts.disableLlmsFull) {
 							injectRoute({
 								entrypoint: new URL('./llms-full.txt.ts', import.meta.url),
 								pattern: '/llms-full.txt',
 								prerender: true,
 							});
+						}
 							injectRoute({
 								entrypoint: new URL('./llms-small.txt.ts', import.meta.url),
 								pattern: '/llms-small.txt',
@@ -58,6 +60,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
+							disableLlmsFull: opts.disableLlmsFull ?? false,
 							};
 
 							const modules = {
