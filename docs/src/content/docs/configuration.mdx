@@ -166,6 +166,20 @@ You must enable the `rawContent` option if your content includes components buil
 rawContent: true,
 ```
 
+### `disableLlmsFull`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+When enabled, disables the generation of the `llms-full.txt` file.
+The route will not be created and the link will not appear in `llms.txt`.
+
+This can be useful if you want to provide only the abridged version of your documentation or custom sets without offering the full version.
+
+```ts
+disableLlmsFull: true,
+```
+
 ### `minify`
 
 A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.
