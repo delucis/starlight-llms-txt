@@ -39,6 +39,30 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								prerender: true,
 							});
 
+							// Parse perPageMarkdown config
+							const perPageMarkdownConfig = (() => {
+								if (!opts.perPageMarkdown) {
+									return { enabled: false, extensionStrategy: 'append' as const, excludePages: ['404'] };
+								}
+								if (opts.perPageMarkdown === true) {
+									return { enabled: true, extensionStrategy: 'append' as const, excludePages: ['404'] };
+								}
+								return {
+									enabled: true,
+									extensionStrategy: opts.perPageMarkdown.extensionStrategy ?? 'append',
+									excludePages: opts.perPageMarkdown.excludePages ?? ['404'],
+								};
+							})();
+
+							// Inject the individual page Markdown route if enabled
+							if (perPageMarkdownConfig.enabled) {
+								injectRoute({
+									entrypoint: new URL('./page-markdown.ts', import.meta.url),
+									pattern: '/[...slug].md',
+									prerender: true,
+								});
+							}
+
 							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
 								base: astroConfig.base,
@@ -58,6 +82,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
+								perPageMarkdown: perPageMarkdownConfig,
 							};
 
 							const modules = {

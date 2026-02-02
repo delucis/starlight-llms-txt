@@ -30,6 +30,11 @@ export interface ProjectContext {
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
+	perPageMarkdown: {
+		enabled: boolean;
+		extensionStrategy: 'append' | 'replace';
+		excludePages: string[];
+	};
 }
 
 /** Plugin user options. */
@@ -184,4 +189,44 @@ export interface StarlightLllmsTextOptions {
 	 * @default false
 	 */
 	rawContent?: boolean;
+
+	/**
+	 * Enable generation of individual Markdown (.md) files for each documentation page.
+	 * This implements the second part of the llmstxt.org standard proposal.
+	 *
+	 * Can be set to `true` to enable with defaults, or an object for advanced configuration.
+	 *
+	 * @default false
+	 *
+	 * @example
+	 * // Enable with defaults
+	 * perPageMarkdown: true
+	 *
+	 * @example
+	 * // Enable with custom configuration
+	 * perPageMarkdown: {
+	 *   extensionStrategy: 'replace',
+	 *   excludePages: ['404', 'admin/**'],
+	 * }
+	 */
+	perPageMarkdown?:
+		| boolean
+		| {
+				/**
+				 * File naming pattern for individual Markdown files.
+				 * - 'append': Adds .md to the existing URL (e.g., /docs/getting-started.html.md)
+				 * - 'replace': Replaces the extension with .md (e.g., /docs/getting-started.md)
+				 *
+				 * @default 'append'
+				 */
+				extensionStrategy?: 'append' | 'replace';
+				/**
+				 * Page IDs to exclude from individual .md file generation. Supports glob patterns.
+				 *
+				 * @default ['404']
+				 *
+				 * @example ['404', 'admin/**']
+				 */
+				excludePages?: string[];
+		  };
 }

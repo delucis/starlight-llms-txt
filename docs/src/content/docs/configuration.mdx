@@ -249,3 +249,45 @@ The separator used when concatenating page entries together.
 ```ts
 pageSeparator: '\n----------\n',
 ```
+
+### `generatePageMarkdown`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+Enable generation of individual Markdown (.md) files for each documentation page.
+This implements the second part of the [llmstxt.org standard proposal](https://llmstxt.org/#proposal), 
+allowing LLMs to fetch specific documentation pages on-demand rather than processing entire documentation.
+
+When enabled, clean Markdown versions of each page will be available at the same URL with `.md` appended
+(or replacing the extension, depending on `markdownFilePattern`).
+
+```js
+generatePageMarkdown: true,
+```
+
+### `markdownFilePattern`
+
+**Type:** `'append' | 'replace'`  
+**Default:** `'append'`
+
+File naming pattern for individual Markdown files when `generatePageMarkdown` is enabled.
+
+- `'append'`: Adds `.md` to the existing URL (e.g., `/docs/getting-started` → `/docs/getting-started.md` and `/docs/getting-started.html.md`)
+- `'replace'`: Replaces the extension with `.md` (e.g., `/docs/getting-started` → `/docs/getting-started.md`)
+
+```js
+markdownFilePattern: 'replace',
+```
+
+### `excludePages`
+
+**Type:** `string[]`  
+**Default:** `['404', 'search']`
+
+Page IDs to exclude from individual .md file generation when `generatePageMarkdown` is enabled. 
+Supports glob patterns processed using [`micromatch`'s matching features](https://github.com/micromatch/micromatch#matching-features).
+
+```js
+excludePages: ['404', 'search', 'admin/**'],
+```

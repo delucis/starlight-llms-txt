@@ -159,9 +159,22 @@ const htmlToMarkdownPipeline = unified()
 			}
 		};
 	})
+	.use(function removeHeadingAnchorLinks() {
+		return (tree) => {
+			// Remove Starlight's heading anchor links (e.g. "Section titled …").
+			// These are sibling <a> elements next to headings inside .sl-heading-wrapper divs.
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				return matches('a.sl-anchor-link', node);
+			});
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
-	.use(remarkStringify);
+	.use(remarkStringify, {
+		emphasis: '*',
+		strong: '*',
+	});
 
 /** Render a content collection entry to HTML and back to Markdown to support rendering and simplifying MDX components */
 export async function entryToSimpleMarkdown(
