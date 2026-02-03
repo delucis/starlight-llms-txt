@@ -17,7 +17,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 				addIntegration({
 					name: 'starlight-llms-txt',
 					hooks: {
-						'astro:config:setup'({ injectRoute, updateConfig }) {
+						'astro:config:setup'({ injectRoute, updateConfig, addMiddleware }) {
 							injectRoute({
 								entrypoint: new URL('./llms.txt.ts', import.meta.url),
 								pattern: '/llms.txt',
@@ -38,10 +38,23 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/_llms-txt/[slug].txt',
 								prerender: true,
 							});
+							injectRoute({
+								entrypoint: new URL('./[...slug].md.ts', import.meta.url),
+								pattern: '/[...slug].md',
+								prerender: true,
+							});
+
+							if (opts.contentNegotiation) {
+								addMiddleware({
+									entrypoint: new URL('./middleware.ts', import.meta.url),
+									order: 'pre',
+								});
+							}
 
 							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
 								base: astroConfig.base,
+								trailingSlash: astroConfig.trailingSlash,
 								title: opts.projectName ?? config.title,
 								description: opts.description ?? config.description,
 								details: opts.details,

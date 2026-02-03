@@ -17,6 +17,7 @@ interface CustomSet extends CustomSetUserConfig {
 /** Project configuration metadata passed from the integration to the routes in a virtual module. */
 export interface ProjectContext {
 	base: AstroConfig['base'];
+	trailingSlash: AstroConfig['trailingSlash'];
 	defaultLocale: StarlightUserConfig['defaultLocale'];
 	locales: StarlightUserConfig['locales'];
 	title: StarlightUserConfig['title'];
@@ -184,4 +185,11 @@ export interface StarlightLllmsTextOptions {
 	 * @default false
 	 */
 	rawContent?: boolean;
+
+	/**
+	 * Enable server-side content negotiation for markdown responses when running in SSR/hybrid mode.
+	 *
+	 * @default false
+	 */
+	contentNegotiation?: boolean;
 }
