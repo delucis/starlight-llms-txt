@@ -23,8 +23,8 @@
 		"unist-util-remove": "^4.0.0"
 	},
 	"devDependencies": {
-		"@astrojs/starlight": "^0.37.4",
-		"astro": "^5.17.1"
+		"@astrojs/starlight": "^0.37.6",
+		"astro": "^5.17.2"
 	},
 	"peerDependencies": {
 		"@astrojs/starlight": ">=0.31",
