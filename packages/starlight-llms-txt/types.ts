@@ -30,6 +30,7 @@ export interface ProjectContext {
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
+	disableLlmsFull: NonNullable<StarlightLllmsTextOptions['disableLlmsFull']>;
 }
 
 /** Plugin user options. */
@@ -184,4 +185,12 @@ export interface StarlightLllmsTextOptions {
 	 * @default false
 	 */
 	rawContent?: boolean;
+
+	/**
+	 * When enabled, disables the generation of the llms-full.txt file.
+	 * The route will not be created and the link will not appear in llms.txt.
+	 *
+	 * @default false
+	 */
+	disableLlmsFull?: boolean;
 }
