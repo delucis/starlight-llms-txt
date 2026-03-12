@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.8.0
+
+### Minor Changes
+
+- [#80](https://github.com/delucis/starlight-llms-txt/pull/80) [`dea7b22`](https://github.com/delucis/starlight-llms-txt/commit/dea7b22b6821168b9982fa9d8840163c6f55b70e) Thanks [@nonoakij](https://github.com/nonoakij)! - Adds support for Astro v6 and Starlight v0.38, drops support for lower versions.
+
 ## 0.7.0
 
 ### Minor Changes
