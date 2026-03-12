@@ -9,7 +9,7 @@
 		".": "./index.ts"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "^4.3.13",
+		"@astrojs/mdx": "^5.0.0",
 		"@types/hast": "^3.0.4",
 		"@types/micromatch": "^4.0.10",
 		"github-slugger": "^2.0.0",
@@ -23,15 +23,12 @@
 		"unist-util-remove": "^4.0.0"
 	},
 	"devDependencies": {
-		"@astrojs/starlight": "^0.37.6",
-		"astro": "^5.18.0"
+		"@astrojs/starlight": "^0.38.0",
+		"astro": "^6.0.0"
 	},
 	"peerDependencies": {
-		"@astrojs/starlight": ">=0.31",
-		"astro": "^5.15.9"
-	},
-	"engines": {
-		"node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+		"@astrojs/starlight": ">=0.38.0",
+		"astro": "^6.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
