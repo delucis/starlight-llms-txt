@@ -18,7 +18,7 @@ importers:
   docs:
     dependencies:
       '@astrojs/starlight':
-        specifier: ^0.38.0
+        specifier: ^0.38.1
         version: 0.38.1(astro@6.0.3(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.7.3))
       astro:
         specifier: ^6.0.3
@@ -73,7 +73,7 @@ importers:
         version: 4.0.0
     devDependencies:
       '@astrojs/starlight':
-        specifier: ^0.38.0
+        specifier: ^0.38.1
         version: 0.38.1(astro@6.0.3(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.7.3))
       astro:
         specifier: ^6.0.3
