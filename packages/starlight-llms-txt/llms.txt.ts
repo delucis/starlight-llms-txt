@@ -22,17 +22,22 @@ export const GET: APIRoute = async (context) => {
 
 	// Further documentation links.
 	segments.push(`## Documentation Sets`);
-	segments.push(
-		[
-			`- [Abridged documentation](${llmsSmallLink}): a compact version of the documentation for ${getSiteTitle()}, with non-essential content removed`,
-			`- [Complete documentation](${llmsFullLink}): the full documentation for ${getSiteTitle()}`,
-			...starlightLllmsTxtContext.customSets.map(
-				({ label, description, slug }) =>
-					`- [${label}](${new URL(`./_llms-txt/${slug}.txt`, site)})` +
-					(description ? `: ${description}` : '')
-			),
-		].join('\n')
+	const documentationSets = [
+		`- [Abridged documentation](${llmsSmallLink}): a compact version of the documentation for ${getSiteTitle()}, with non-essential content removed`,
+	];
+	if (!starlightLllmsTxtContext.disableLlmsFull) {
+		documentationSets.push(
+			`- [Complete documentation](${llmsFullLink}): the full documentation for ${getSiteTitle()}`
+		);
+	}
+	documentationSets.push(
+		...starlightLllmsTxtContext.customSets.map(
+			({ label, description, slug }) =>
+				`- [${label}](${new URL(`./_llms-txt/${slug}.txt`, site)})` +
+				(description ? `: ${description}` : '')
+		)
 	);
+	segments.push(documentationSets.join('\n'));
 
 	// Additional notes.
 	segments.push(`## Notes`);
