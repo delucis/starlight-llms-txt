@@ -71,7 +71,7 @@ const htmlToMarkdownPipeline = unified()
 				const figcaption = select('figcaption', instance);
 				if (figcaption) {
 					const terminalWindowTextIndex = figcaption.children.findIndex((child) =>
-						matches('span.sr-only', child)
+						matches('span.sr-only', child),
 					);
 					if (terminalWindowTextIndex > -1) {
 						figcaption.children.splice(terminalWindowTextIndex, 1);
@@ -161,7 +161,7 @@ const htmlToMarkdownPipeline = unified()
 	})
 	.use(function removeHtmlComments() {
 		return (tree) => {
-			remove(tree, (_node) => _node.type === 'comment');
+			remove(tree, ({ type }) => type === 'comment');
 		};
 	})
 	.use(rehypeRemark)
@@ -172,7 +172,7 @@ const htmlToMarkdownPipeline = unified()
 export async function entryToSimpleMarkdown(
 	entry: CollectionEntry<'docs'>,
 	context: APIContext,
-	shouldMinify: boolean = false
+	shouldMinify: boolean = false,
 ) {
 	const { rawContent } = starlightLllmsTxtContext;
 
