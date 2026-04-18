@@ -159,6 +159,11 @@ const htmlToMarkdownPipeline = unified()
 			}
 		};
 	})
+	.use(function removeHtmlComments() {
+		return (tree) => {
+			remove(tree, (_node) => _node.type === 'comment');
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);
