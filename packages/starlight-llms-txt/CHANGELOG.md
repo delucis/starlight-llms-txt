@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.8.1
+
+### Patch Changes
+
+- [`29e5efb`](https://github.com/delucis/starlight-llms-txt/commit/29e5efb3a7d4d8b2167696e87b7f4d60db1ac93a) Thanks [@mvanhorn](https://github.com/mvanhorn)! - Strips HTML comments from llms.txt files. `<!-- ...  -->` style comments in `.md` files are no longer emitted in the generated files.
+
 ## 0.8.0
 
 ### Minor Changes
