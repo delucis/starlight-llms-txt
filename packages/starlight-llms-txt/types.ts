@@ -131,6 +131,24 @@ export interface StarlightLllmsTextOptions {
 		whitespace?: boolean;
 
 		/**
+		 * When `whitespace` is enabled, preserve the original newlines (and
+		 * indentation) inside fenced code blocks (``` and ~~~) so that
+		 * multi-line code samples stay multi-line in `llms-small.txt`.
+		 *
+		 * Whitespace in prose (paragraphs, lists, etc.) is still collapsed for
+		 * token efficiency — only code-block bodies are exempt. Both
+		 * variable-length fences (e.g. four or more backticks) and tilde fences
+		 * are recognized. Has no effect when `whitespace` is `false`.
+		 *
+		 * Set this to `false` to restore the previous behavior of collapsing
+		 * every whitespace run, including newlines inside code fences, into a
+		 * single space.
+		 *
+		 * @default true
+		 */
+		preserveCodeBlocks?: boolean;
+
+		/**
 		 * Custom selectors to exclude when generating `llms-small.txt`.
 		 *
 		 * @default []

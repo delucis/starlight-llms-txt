@@ -20,6 +20,7 @@ const minifyDefaults = {
 	danger: false,
 	details: true,
 	whitespace: true,
+	preserveCodeBlocks: true,
 	customSelectors: [],
 };
 /** Resolved minification options */
@@ -192,7 +193,26 @@ export async function entryToSimpleMarkdown(
 	});
 	let markdown = String(file).trim();
 	if (shouldMinify && minify.whitespace) {
-		markdown = markdown.replace(/\s+/g, ' ');
+		if (minify.preserveCodeBlocks) {
+			// Collapse whitespace in prose, but keep the contents of fenced code
+			// blocks (``` and ~~~, of any length ≥ 3) intact so multi-line code
+			// samples stay multi-line. Fences are matched at the start of a line
+			// and the closing fence must use the same marker length and
+			// indentation as the opener (via back-references).
+			const fenceMatcher =
+				/(?<=^|\n)([ \t]*)(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\1\2[ \t]*(?=\n|$)/g;
+			const parts: string[] = [];
+			let lastIndex = 0;
+			for (const match of markdown.matchAll(fenceMatcher)) {
+				parts.push(markdown.slice(lastIndex, match.index).replace(/\s+/g, ' '));
+				parts.push('\n', match[0], '\n');
+				lastIndex = match.index + match[0].length;
+			}
+			parts.push(markdown.slice(lastIndex).replace(/\s+/g, ' '));
+			markdown = parts.join('');
+		} else {
+			markdown = markdown.replace(/\s+/g, ' ');
+		}
 	}
 	return markdown;
 }
