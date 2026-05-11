@@ -20,7 +20,7 @@ const minifyDefaults = {
 	danger: false,
 	details: true,
 	whitespace: true,
-	preserveCodeBlocks: true,
+	collapseCodeBlocks: false,
 	customSelectors: [],
 };
 /** Resolved minification options */
@@ -193,7 +193,9 @@ export async function entryToSimpleMarkdown(
 	});
 	let markdown = String(file).trim();
 	if (shouldMinify && minify.whitespace) {
-		if (minify.preserveCodeBlocks) {
+		if (minify.collapseCodeBlocks) {
+			markdown = markdown.replace(/\s+/g, ' ');
+		} else {
 			// Collapse whitespace in prose, but keep the contents of fenced code
 			// blocks (``` and ~~~, of any length ≥ 3) intact so multi-line code
 			// samples stay multi-line. Fences are matched at the start of a line
@@ -215,8 +217,6 @@ export async function entryToSimpleMarkdown(
 			// input; trim again so the `\n` wrappers we added around fences at
 			// the start/end of the document don't reintroduce it.
 			markdown = parts.join('').trim();
-		} else {
-			markdown = markdown.replace(/\s+/g, ' ');
 		}
 	}
 	return markdown;
