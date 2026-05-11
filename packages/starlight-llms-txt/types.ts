@@ -30,6 +30,7 @@ export interface ProjectContext {
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
+	removeSelectors: NonNullable<StarlightLllmsTextOptions['removeSelectors']>;
 }
 
 /** Plugin user options. */
@@ -184,4 +185,27 @@ export interface StarlightLllmsTextOptions {
 	 * @default false
 	 */
 	rawContent?: boolean;
+
+	/**
+	 * CSS-style selectors matching elements that should be removed from the rendered HTML
+	 * before it is converted to Markdown for `llms.txt`, `llms-full.txt`, `llms-small.txt`,
+	 * and any `customSets` outputs.
+	 *
+	 * Selectors are tested with
+	 * [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support)
+	 * and should match your site’s rendered HTML output.
+	 *
+	 * Unlike {@link StarlightLllmsTextOptions.minify | `minify.customSelectors`}, which only
+	 * applies when generating `llms-small.txt`, selectors listed here are removed from every
+	 * generated text bundle. Use this option to strip transient annotations injected by
+	 * docs-site rendering plugins (for example, code-block hover popovers) that should not
+	 * appear in the plain-text Markdown surface consumed by LLMs.
+	 *
+	 * @default []
+	 *
+	 * @example
+	 * // Strip code-block hover popovers and similar annotations from every output.
+	 * removeSelectors: ['.twoslash-popup-container', '.twoslash-error-box'],
+	 */
+	removeSelectors?: string[];
 }

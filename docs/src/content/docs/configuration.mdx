@@ -166,6 +166,30 @@ You must enable the `rawContent` option if your content includes components buil
 rawContent: true,
 ```
 
+### `removeSelectors`
+
+**Type:** `string[]`  
+**Default:** `[]`
+
+Specify CSS-style selectors matching elements to remove from the rendered HTML before it is converted to Markdown.
+Selectors are tested with [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support) and should match your site’s rendered HTML output.
+
+Unlike [`minify.customSelectors`](#minifycustomselectors), which only applies when generating `llms-small.txt`, selectors listed here are removed from **every** generated text bundle — `llms.txt`, `llms-full.txt`, `llms-small.txt`, and any `customSets`.
+
+Use this option to strip transient annotations injected by docs-site rendering plugins (for example, code-block hover popovers) that should not appear in the plain-text Markdown surface consumed by LLMs.
+
+In the following example, `removeSelectors` is used to strip hover popovers and error annotations injected by [`expressive-code-twoslash`](https://www.npmjs.com/package/expressive-code-twoslash) from every output, while leaving the underlying code intact:
+
+```ts
+removeSelectors: [
+	'.twoslash-popup-container',
+	'.twoslash-static-container',
+	'.twoslash-completion',
+	'.twoslash-error-box',
+	'.twoslash-custom-box',
+],
+```
+
 ### `minify`
 
 A map of content types to filter out of docs when creating `llms-small.txt` for small context windows.

@@ -28,12 +28,32 @@ const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
 const selectors = [...minify.customSelectors];
 if (minify.details) selectors.unshift('details');
 
+/** Selectors for elements to remove from every output (independent of minification). */
+const removeSelectors = [...starlightLllmsTxtContext.removeSelectors];
+
 const astroContainer = await experimental_AstroContainer.create({
 	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
 });
 
 const htmlToMarkdownPipeline = unified()
 	.use(rehypeParse, { fragment: true })
+	.use(function removeSelectorsLlmsTxt() {
+		return (tree) => {
+			if (removeSelectors.length === 0) {
+				return;
+			}
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				for (const selector of removeSelectors) {
+					if (matches(selector, node)) {
+						return true;
+					}
+				}
+				return false;
+			});
+			return tree;
+		};
+	})
 	.use(function minifyLlmsTxt() {
 		return (tree, file) => {
 			if (!file.data.starlightLlmsTxt.minify) {

@@ -58,6 +58,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								locales: config.locales,
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
+								removeSelectors: opts.removeSelectors ?? [],
 							};
 
 							const modules = {
