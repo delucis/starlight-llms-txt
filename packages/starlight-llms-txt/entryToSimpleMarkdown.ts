@@ -198,18 +198,23 @@ export async function entryToSimpleMarkdown(
 			// blocks (``` and ~~~, of any length ≥ 3) intact so multi-line code
 			// samples stay multi-line. Fences are matched at the start of a line
 			// and the closing fence must use the same marker length and
-			// indentation as the opener (via back-references).
+			// indentation as the opener (via back-references). The body chunk is
+			// optional so empty fences (`` ```\n``` ``) still match.
 			const fenceMatcher =
-				/(?<=^|\n)([ \t]*)(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\1\2[ \t]*(?=\n|$)/g;
+				/(?<=^|\n)([ \t]*)(`{3,}|~{3,})[^\n]*\n(?:[\s\S]*?\n)?\1\2[ \t]*(?=\n|$)/g;
 			const parts: string[] = [];
 			let lastIndex = 0;
 			for (const match of markdown.matchAll(fenceMatcher)) {
-				parts.push(markdown.slice(lastIndex, match.index).replace(/\s+/g, ' '));
+				const index = match.index ?? 0;
+				parts.push(markdown.slice(lastIndex, index).replace(/\s+/g, ' '));
 				parts.push('\n', match[0], '\n');
-				lastIndex = match.index + match[0].length;
+				lastIndex = index + match[0].length;
 			}
 			parts.push(markdown.slice(lastIndex).replace(/\s+/g, ' '));
-			markdown = parts.join('');
+			// `String(file).trim()` already stripped boundary whitespace from the
+			// input; trim again so the `\n` wrappers we added around fences at
+			// the start/end of the document don't reintroduce it.
+			markdown = parts.join('').trim();
 		} else {
 			markdown = markdown.replace(/\s+/g, ' ');
 		}
