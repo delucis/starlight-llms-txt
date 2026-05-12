@@ -1,5 +1,15 @@
 # starlight-llms-txt
 
+## 0.9.0
+
+### Minor Changes
+
+- [#104](https://github.com/delucis/starlight-llms-txt/pull/104) [`3f6c45b`](https://github.com/delucis/starlight-llms-txt/commit/3f6c45bac5fca1a0d5d819f1a96ce4354f72b334) Thanks [@davidfowl](https://github.com/davidfowl)! - Preserves the contents of code blocks when collapsing whitespace in `llms-small.txt`.
+
+  Previously, the `minify.whitespace` option collapsed every whitespace run — including newlines inside fenced code blocks — into a single space, so multi-line code samples ended up on one line. Now, fenced code blocks keep their original newlines and indentation while whitespace in prose still collapses for token efficiency.
+
+  A new `minify.collapseCodeBlocks` option controls this behavior. Set it to `true` to restore the previous flatten-everything output.
+
 ## 0.8.1
 
 ### Patch Changes
