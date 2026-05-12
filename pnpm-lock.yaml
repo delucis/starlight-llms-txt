@@ -20,15 +20,15 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.38.4
         version: 0.38.4(astro@6.2.1(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.7.3))
+      '@hey-api/starlight-llms-txt':
+        specifier: workspace:*
+        version: link:../packages/starlight-llms-txt
       astro:
         specifier: ^6.1.10
         version: 6.2.1(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.7.3)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
-      starlight-llms-txt:
-        specifier: workspace:*
-        version: link:../packages/starlight-llms-txt
       starlight-package-managers:
         specifier: ^0.12.0
         version: 0.12.0(@astrojs/starlight@0.38.4(astro@6.2.1(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.7.3)))
@@ -71,6 +71,9 @@ importers:
       unist-util-remove:
         specifier: ^4.0.0
         version: 4.0.0
+      unist-util-visit:
+        specifier: ^5.1.0
+        version: 5.1.0
     devDependencies:
       '@astrojs/starlight':
         specifier: ^0.38.4

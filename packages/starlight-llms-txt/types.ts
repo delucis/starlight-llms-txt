@@ -30,6 +30,7 @@ export interface ProjectContext {
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
+	trailingSlash: AstroConfig['trailingSlash'];
 }
 
 /** Plugin user options. */
@@ -184,4 +185,10 @@ export interface StarlightLllmsTextOptions {
 	 * @default false
 	 */
 	rawContent?: boolean;
+
+	/**
+	 * Set to `false` to disable generation of individual `.md` files for each documentation page.
+	 * @default true
+	 */
+	mdRoutes?: false;
 }

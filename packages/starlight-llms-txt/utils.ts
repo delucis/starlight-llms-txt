@@ -23,3 +23,11 @@ export function isDefaultLocale(doc: CollectionEntry<'docs'>): boolean {
 export function ensureTrailingSlash(path: string) {
 	return path.at(-1) === '/' ? path : path + '/';
 }
+
+export function docEntryToMarkdownSlug(entry: CollectionEntry<'docs'>): string {
+    let slug = entry.id.replace(/\.mdx?$/, '');
+    if (entry.data.slug) slug = entry.data.slug;
+    slug = slug.replace(/\/index$/, '');
+    if (slug === 'index') slug = '';
+    return slug || 'index';
+}

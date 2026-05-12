@@ -1,9 +1,9 @@
 import type { APIContext } from 'astro';
-import { getCollection } from 'astro:content';
 import micromatch from 'micromatch';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
+import { getDocsEntries } from './docsEntries';
 import { entryToSimpleMarkdown } from './entryToSimpleMarkdown';
-import { defaultLang, isDefaultLocale } from './utils';
+import { defaultLang } from './utils';
 
 /** Collator to compare two strings in the default language. */
 const collator = new Intl.Collator(defaultLang);
@@ -27,7 +27,7 @@ export async function generateLlmsTxt(
 		include?: string[] | undefined;
 	}
 ): Promise<string> {
-	let docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
+	let docs = await getDocsEntries();
 	if (include) {
 		docs = docs.filter((doc) => micromatch.isMatch(doc.id, include));
 	}

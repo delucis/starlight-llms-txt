@@ -9,7 +9,7 @@ on:
 jobs:
   release:
     name: Release
-    if: ${{ github.repository_owner == 'delucis' }}
+    if: ${{ github.repository_owner == 'hey-api' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
