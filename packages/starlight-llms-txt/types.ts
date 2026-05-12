@@ -30,7 +30,7 @@ export interface ProjectContext {
 	exclude: NonNullable<StarlightLllmsTextOptions['exclude']>;
 	pageSeparator: NonNullable<StarlightLllmsTextOptions['pageSeparator']>;
 	rawContent: NonNullable<StarlightLllmsTextOptions['rawContent']>;
-	removeSelectors: NonNullable<StarlightLllmsTextOptions['removeSelectors']>;
+	customSelectors: NonNullable<StarlightLllmsTextOptions['customSelectors']>;
 }
 
 /** Plugin user options. */
@@ -134,6 +134,11 @@ export interface StarlightLllmsTextOptions {
 		/**
 		 * Custom selectors to exclude when generating `llms-small.txt`.
 		 *
+		 * @deprecated Use the top-level
+		 * {@link StarlightLllmsTextOptions.customSelectors | `customSelectors`} option instead.
+		 * Selectors listed here continue to apply to `llms-small.txt` only, additively with any
+		 * selectors listed in `customSelectors.small` and `customSelectors.all`.
+		 *
 		 * @default []
 		 *
 		 * @example
@@ -188,24 +193,47 @@ export interface StarlightLllmsTextOptions {
 
 	/**
 	 * CSS-style selectors matching elements that should be removed from the rendered HTML
-	 * before it is converted to Markdown for `llms.txt`, `llms-full.txt`, `llms-small.txt`,
-	 * and any `customSets` outputs.
+	 * before it is converted to Markdown.
 	 *
 	 * Selectors are tested with
 	 * [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support)
 	 * and should match your site’s rendered HTML output.
 	 *
-	 * Unlike {@link StarlightLllmsTextOptions.minify | `minify.customSelectors`}, which only
-	 * applies when generating `llms-small.txt`, selectors listed here are removed from every
-	 * generated text bundle. Use this option to strip transient annotations injected by
-	 * docs-site rendering plugins (for example, code-block hover popovers) that should not
-	 * appear in the plain-text Markdown surface consumed by LLMs.
+	 * Two shapes are supported:
+	 *
+	 * - **Array** — selectors apply to `llms-small.txt` only (same scope as the
+	 *   deprecated {@link StarlightLllmsTextOptions.minify | `minify.customSelectors`} option).
+	 * - **Object** with optional `small`, `full`, and `all` arrays:
+	 *   - `small` applies to `llms-small.txt`.
+	 *   - `full` applies to `llms-full.txt` and any `customSets` outputs.
+	 *   - `all` applies to both (merged with `small` and `full`).
+	 *
+	 * Selectors listed via the legacy `minify.customSelectors` option are merged additively
+	 * into the `small` bucket so existing configurations keep working.
 	 *
 	 * @default []
 	 *
 	 * @example
-	 * // Strip code-block hover popovers and similar annotations from every output.
-	 * removeSelectors: ['.twoslash-popup-container', '.twoslash-error-box'],
+	 * // Array form (legacy): strip a sponsors banner from llms-small.txt only.
+	 * customSelectors: ['.sponsors-banner'],
+	 *
+	 * @example
+	 * // Object form: strip code-block hover popovers from every output, while keeping a
+	 * // small-only filter for an interactive demo and a full-only filter for verbose notes.
+	 * customSelectors: {
+	 *   all: ['.twoslash-popup-container', '.twoslash-error-box'],
+	 *   small: ['interactive-demo'],
+	 *   full: ['.verbose-only'],
+	 * },
 	 */
-	removeSelectors?: string[];
+	customSelectors?:
+		| string[]
+		| {
+				/** Selectors applied when generating `llms-small.txt`. */
+				small?: string[];
+				/** Selectors applied when generating `llms-full.txt` and any `customSets` outputs. */
+				full?: string[];
+				/** Selectors applied to every generated output (merged with `small` and `full`). */
+				all?: string[];
+		  };
 }

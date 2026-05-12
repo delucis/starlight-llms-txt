@@ -166,28 +166,44 @@ You must enable the `rawContent` option if your content includes components buil
 rawContent: true,
 ```
 
-### `removeSelectors`
+### `customSelectors`
 
-**Type:** `string[]`  
+**Type:** `string[] | { small?: string[]; full?: string[]; all?: string[] }`  
 **Default:** `[]`
 
-Specify CSS-style selectors matching elements to remove from the rendered HTML before it is converted to Markdown.
+CSS-style selectors matching elements that should be removed from the rendered HTML before it is converted to Markdown.
 Selectors are tested with [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support) and should match your site’s rendered HTML output.
 
-Unlike [`minify.customSelectors`](#minifycustomselectors), which only applies when generating `llms-small.txt`, selectors listed here are removed from **every** generated text bundle — `llms.txt`, `llms-full.txt`, `llms-small.txt`, and any `customSets`.
+Two shapes are supported:
 
-Use this option to strip transient annotations injected by docs-site rendering plugins (for example, code-block hover popovers) that should not appear in the plain-text Markdown surface consumed by LLMs.
+- **Array** — selectors apply to `llms-small.txt` only (same scope as the deprecated [`minify.customSelectors`](#minifycustomselectors) option).
+- **Object** with optional `small`, `full`, and `all` keys, each accepting an array of selectors:
+  - `small` applies to `llms-small.txt`.
+  - `full` applies to `llms-full.txt` and any [`customSets`](#customsets) outputs.
+  - `all` applies to both (merged with `small` and `full`).
 
-In the following example, `removeSelectors` is used to strip hover popovers and error annotations injected by [`expressive-code-twoslash`](https://www.npmjs.com/package/expressive-code-twoslash) from every output, while leaving the underlying code intact:
+Selectors listed via the legacy [`minify.customSelectors`](#minifycustomselectors) option are merged additively into the `small` bucket so existing configurations keep working.
+
+#### Array form (legacy)
 
 ```ts
-removeSelectors: [
-	'.twoslash-popup-container',
-	'.twoslash-static-container',
-	'.twoslash-completion',
-	'.twoslash-error-box',
-	'.twoslash-custom-box',
-],
+customSelectors: ['interactive-demo', '.sponsors-banner'],
+```
+
+#### Object form (per-output)
+
+In the following example, hover popovers and error annotations injected by [`expressive-code-twoslash`](https://www.npmjs.com/package/expressive-code-twoslash) are stripped from **every** generated output, leaving the underlying code intact:
+
+```ts
+customSelectors: {
+	all: [
+		'.twoslash-popup-container',
+		'.twoslash-static-container',
+		'.twoslash-completion',
+		'.twoslash-error-box',
+		'.twoslash-custom-box',
+	],
+},
 ```
 
 ### `minify`
@@ -210,6 +226,11 @@ minify: {
 
 **Type:** `string[]`  
 **Default:** `[]`
+
+:::caution[Deprecated]
+This option is deprecated. Use the top-level [`customSelectors`](#customselectors) option instead.
+Selectors listed here continue to apply to `llms-small.txt` only and are merged additively with any selectors in `customSelectors.small` and `customSelectors.all`.
+:::
 
 Specify custom CSS-style selectors to exclude.
 Selectors are tested with [`hast-util-select`’s matching features](https://github.com/syntax-tree/hast-util-select#support) and should match your site’s HTML output.
