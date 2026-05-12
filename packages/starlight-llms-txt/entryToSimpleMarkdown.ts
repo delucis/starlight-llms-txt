@@ -2,7 +2,7 @@ import mdxServer from '@astrojs/mdx/server.js';
 import type { APIContext } from 'astro';
 import { experimental_AstroContainer } from 'astro/container';
 import { render, type CollectionEntry } from 'astro:content';
-import type { RootContent } from 'hast';
+import type { Element, RootContent } from 'hast';
 import { matches, select, selectAll } from 'hast-util-select';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 import { remove } from 'unist-util-remove';
+import { visit } from 'unist-util-visit';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 
 /** Minification defaults */
@@ -197,6 +198,26 @@ const htmlToMarkdownPipeline = unified()
 			remove(tree, ({ type }) => type === 'comment');
 		};
 	})
+	.use(function resolveAbsoluteUrls() {
+		return (tree, file) => {
+			const site = (file.data.starlightLlmsTxt as any).site as string;
+			if (!site) return;
+			visit(tree, 'element', (node: Element) => {
+				if (node.tagName === 'a' && node.properties?.href) {
+					const href = String(node.properties.href);
+					if (href.startsWith('/')) {
+						node.properties.href = new URL(href, site).toString();
+					}
+				}
+				if (node.tagName === 'img' && node.properties?.src) {
+					const src = String(node.properties.src);
+					if (src.startsWith('/')) {
+						node.properties.src = new URL(src, site).toString();
+					}
+				}
+			});
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);
@@ -221,7 +242,7 @@ export async function entryToSimpleMarkdown(
 	const html = await astroContainer.renderToString(Content, context);
 	const file = await htmlToMarkdownPipeline.process({
 		value: html,
-		data: { starlightLlmsTxt: { minify: shouldMinify } },
+		data: { starlightLlmsTxt: { minify: shouldMinify, site: String(context.site) } },
 	});
 	let markdown = String(file).trim();
 	if (shouldMinify && minify.whitespace) {

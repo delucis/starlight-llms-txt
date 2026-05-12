@@ -1,6 +1,6 @@
 import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
-import starlightLlmsTxt from 'starlight-llms-txt';
+import starlightLlmsTxt from '@hey-api/starlight-llms-txt';
 
 export default defineConfig({
 	site: 'https://delucis.github.io',

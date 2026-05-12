@@ -1,5 +1,5 @@
 {
-	"name": "starlight-llms-txt",
+	"name": "@hey-api/starlight-llms-txt",
 	"version": "0.10.0",
 	"license": "MIT",
 	"description": "Generate llms.txt files to train large language models on your Starlight documentation website",
@@ -20,7 +20,8 @@
 		"remark-gfm": "^4.0.1",
 		"remark-stringify": "^11.0.0",
 		"unified": "^11.0.5",
-		"unist-util-remove": "^4.0.0"
+		"unist-util-remove": "^4.0.0",
+		"unist-util-visit": "^5.1.0"
 	},
 	"devDependencies": {
 		"@astrojs/starlight": "^0.38.4",

@@ -38,6 +38,13 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/_llms-txt/[slug].txt',
 								prerender: true,
 							});
+							if (opts.mdRoutes !== false) {
+								injectRoute({
+									entrypoint: new URL('./[...slug].md.ts', import.meta.url),
+									pattern: '/[...slug].md',
+									prerender: true,
+								});
+							}
 
 							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
@@ -59,6 +66,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pageSeparator: opts.pageSeparator ?? '\n\n',
 								rawContent: opts.rawContent ?? false,
 								customSelectors: opts.customSelectors ?? [],
+								trailingSlash: astroConfig.trailingSlash,
 							};
 
 							const modules = {
