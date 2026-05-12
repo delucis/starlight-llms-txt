@@ -20,6 +20,7 @@ const minifyDefaults = {
 	danger: false,
 	details: true,
 	whitespace: true,
+	collapseCodeBlocks: false,
 	customSelectors: [],
 };
 /** Resolved minification options */
@@ -192,7 +193,31 @@ export async function entryToSimpleMarkdown(
 	});
 	let markdown = String(file).trim();
 	if (shouldMinify && minify.whitespace) {
-		markdown = markdown.replace(/\s+/g, ' ');
+		if (minify.collapseCodeBlocks) {
+			markdown = markdown.replace(/\s+/g, ' ');
+		} else {
+			// Collapse whitespace in prose, but keep the contents of fenced code
+			// blocks (``` and ~~~, of any length ≥ 3) intact so multi-line code
+			// samples stay multi-line. Fences are matched at the start of a line
+			// and the closing fence must use the same marker length and
+			// indentation as the opener (via back-references). The body chunk is
+			// optional so empty fences (`` ```\n``` ``) still match.
+			const fenceMatcher =
+				/(?<=^|\n)([ \t]*)(`{3,}|~{3,})[^\n]*\n(?:[\s\S]*?\n)?\1\2[ \t]*(?=\n|$)/g;
+			const parts: string[] = [];
+			let lastIndex = 0;
+			for (const match of markdown.matchAll(fenceMatcher)) {
+				const index = match.index ?? 0;
+				parts.push(markdown.slice(lastIndex, index).replace(/\s+/g, ' '));
+				parts.push('\n', match[0], '\n');
+				lastIndex = index + match[0].length;
+			}
+			parts.push(markdown.slice(lastIndex).replace(/\s+/g, ' '));
+			// `String(file).trim()` already stripped boundary whitespace from the
+			// input; trim again so the `\n` wrappers we added around fences at
+			// the start/end of the document don't reintroduce it.
+			markdown = parts.join('').trim();
+		}
 	}
 	return markdown;
 }
