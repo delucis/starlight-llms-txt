@@ -282,7 +282,24 @@ Exclude the `<details>` HTML element.
 **Default:** `true`
 
 Collapse whitespace.
-When `minify.whitespace` is set to `true`, all whitespace — including new lines — is collapsed to a single space character.
+When `minify.whitespace` is set to `true`, all whitespace — including new lines — is collapsed to a single space character, except inside fenced code blocks. Set [`minify.collapseCodeBlocks`](#minifycollapsecodeblocks) to `true` to collapse whitespace inside fenced code blocks as well.
+
+#### `minify.collapseCodeBlocks`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+When [`minify.whitespace`](#minifywhitespace) is enabled, also collapse whitespace inside fenced code blocks (` ``` ` and `~~~`). By default, the bodies of fenced code blocks keep their original newlines (and indentation) so multi-line code samples stay multi-line in `llms-small.txt`. Both variable-length fences (e.g. four or more backticks) and tilde fences are recognized.
+
+Set this to `true` to collapse every whitespace run — including newlines inside code fences — into a single space:
+
+```js
+minify: {
+	collapseCodeBlocks: true,
+},
+```
+
+Has no effect when `minify.whitespace` is `false`.
 
 ### `pageSeparator`
 
