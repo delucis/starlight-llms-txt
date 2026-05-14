@@ -25,9 +25,30 @@ const minifyDefaults = {
 };
 /** Resolved minification options */
 const minify = { ...minifyDefaults, ...starlightLllmsTxtContext.minify };
-/** Selectors for elements to remove during minification. */
-const selectors = [...minify.customSelectors];
-if (minify.details) selectors.unshift('details');
+
+/**
+ * Resolve the public `customSelectors` option into per-output buckets.
+ *
+ * - The array form is treated as `{ small: [...] }` for backwards compatibility with the
+ *   legacy `minify.customSelectors` option.
+ * - In the object form, `all` is merged into both `small` and `full`.
+ * - The deprecated `minify.customSelectors` option is merged additively into the `small`
+ *   bucket so existing configurations keep working.
+ */
+const userCustomSelectors = starlightLllmsTxtContext.customSelectors;
+const userCustomSmall = Array.isArray(userCustomSelectors)
+	? userCustomSelectors
+	: [...(userCustomSelectors.small ?? []), ...(userCustomSelectors.all ?? [])];
+const userCustomFull = Array.isArray(userCustomSelectors)
+	? []
+	: [...(userCustomSelectors.full ?? []), ...(userCustomSelectors.all ?? [])];
+
+/** Selectors removed when generating `llms-small.txt`. */
+const smallSelectors = [...minify.customSelectors, ...userCustomSmall];
+if (minify.details) smallSelectors.unshift('details');
+
+/** Selectors removed when generating `llms-full.txt` and any `customSets` outputs. */
+const fullSelectors = [...userCustomFull];
 
 const astroContainer = await experimental_AstroContainer.create({
 	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
@@ -35,6 +56,24 @@ const astroContainer = await experimental_AstroContainer.create({
 
 const htmlToMarkdownPipeline = unified()
 	.use(rehypeParse, { fragment: true })
+	.use(function customSelectorsLlmsTxt() {
+		return (tree, file) => {
+			const stripList = file.data.starlightLlmsTxt.minify ? smallSelectors : fullSelectors;
+			if (stripList.length === 0) {
+				return;
+			}
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				for (const selector of stripList) {
+					if (matches(selector, node)) {
+						return true;
+					}
+				}
+				return false;
+			});
+			return tree;
+		};
+	})
 	.use(function minifyLlmsTxt() {
 		return (tree, file) => {
 			if (!file.data.starlightLlmsTxt.minify) {
@@ -42,13 +81,6 @@ const htmlToMarkdownPipeline = unified()
 			}
 			remove(tree, (_node) => {
 				const node = _node as RootContent;
-
-				// Remove elements matching any selectors to be minified:
-				for (const selector of selectors) {
-					if (matches(selector, node)) {
-						return true;
-					}
-				}
 
 				// Remove aside components:
 				if (matches('.starlight-aside', node)) {
