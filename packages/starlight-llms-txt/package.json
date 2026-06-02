@@ -9,7 +9,7 @@
 		".": "./index.ts"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "^5.0.6",
+		"@astrojs/mdx": "^6.0.1",
 		"@types/hast": "^3.0.4",
 		"@types/micromatch": "^4.0.10",
 		"github-slugger": "^2.0.0",
