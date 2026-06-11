@@ -50,9 +50,17 @@ if (minify.details) smallSelectors.unshift('details');
 /** Selectors removed when generating `llms-full.txt` and any `customSets` outputs. */
 const fullSelectors = [...userCustomFull];
 
-const astroContainer = await experimental_AstroContainer.create({
-	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
-});
+let astroContainerPromise: Promise<experimental_AstroContainer> | undefined;
+
+function getAstroContainer() {
+	if (!astroContainerPromise) {
+		astroContainerPromise = experimental_AstroContainer.create({
+			renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
+		});
+	}
+
+	return astroContainerPromise;
+}
 
 const htmlToMarkdownPipeline = unified()
 	.use(rehypeParse, { fragment: true })
@@ -218,6 +226,7 @@ export async function entryToSimpleMarkdown(
 	}
 
 	const { Content } = await render(entry);
+	const astroContainer = await getAstroContainer();
 	const html = await astroContainer.renderToString(Content, context);
 	const file = await htmlToMarkdownPipeline.process({
 		value: html,
