@@ -1,5 +1,13 @@
 # starlight-llms-txt
 
+## 0.11.0
+
+### Minor Changes
+
+- [#127](https://github.com/delucis/starlight-llms-txt/pull/127) [`bf986de`](https://github.com/delucis/starlight-llms-txt/commit/bf986de467f054f9b70e8478b8f4f2aab4ff756f) Thanks [@funkadelic](https://github.com/funkadelic)! - Updates to support Astro 7. The `astro` peer dependency is now `^7.0.0` and the `@astrojs/starlight` peer dependency is now `>=0.41.0`.
+
+  Support for Astro 6 and Starlight versions below 0.41 has been dropped. Existing projects on Astro 6 can continue using the previous release until they are ready to upgrade to Astro 7.
+
 ## 0.10.0
 
 ### Minor Changes
