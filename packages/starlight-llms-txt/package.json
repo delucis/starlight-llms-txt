@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^7.0.0",
-		"@types/hast": "^3.0.4",
+		"@types/hast": "^3.0.5",
 		"@types/micromatch": "^4.0.10",
 		"github-slugger": "^2.0.0",
 		"hast-util-select": "^6.0.4",
