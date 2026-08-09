@@ -50,6 +50,16 @@ import { PackageManagers } from 'starlight-package-managers';
 
 </Steps>
 
+## Validating the deployed output
+
+The plugin generates a correct `llms.txt` at build time, but serving-layer config can break it in production: host redirect rules, domain migrations, and docs restructures all bite after the build goes green. [llms-txt-check](https://github.com/portdeveloper/llms-txt-check) verifies the deployed file against what your site actually serves:
+
+```yaml
+- run: npx llms-txt-check https://example.com
+```
+
+It exits nonzero when the file or any listed URL stops serving, so the deploy that breaks a route goes red.
+
 ## Next steps
 
 See the [Configuration](/starlight-llms-txt/configuration/) guide to learn how to adjust the output of the plugin.
