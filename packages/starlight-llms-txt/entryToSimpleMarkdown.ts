@@ -11,6 +11,7 @@ import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 import { remove } from 'unist-util-remove';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
+import { ensureTrailingSlash } from './utils';
 
 /** Minification defaults */
 const minifyDefaults = {
@@ -197,6 +198,19 @@ const htmlToMarkdownPipeline = unified()
 			remove(tree, ({ type }) => type === 'comment');
 		};
 	})
+	.use(function qualifyFragmentLinks() {
+		// Resolve in-page fragment links against the page being processed so they
+		// stay unambiguous once pages are concatenated into `llms-full.txt`. Kept
+		// root-relative (never an absolute host) so multi-host / multi-version
+		// sites resolve them correctly. Only hrefs starting with `#` are touched.
+		return (tree, file) => {
+			const base = file.data.starlightLlmsTxt.pagePath;
+			if (!base) return;
+			for (const anchor of selectAll('a[href^="#"]', tree)) {
+				anchor.properties.href = base + (anchor.properties.href as string);
+			}
+		};
+	})
 	.use(rehypeRemark)
 	.use(remarkGfm)
 	.use(remarkStringify);
@@ -219,9 +233,15 @@ export async function entryToSimpleMarkdown(
 
 	const { Content } = await render(entry);
 	const html = await astroContainer.renderToString(Content, context);
+	// Starlight routes `index` entries to their parent directory ('' for the
+	// site root), so drop a trailing `index` segment before building the path.
+	const slug = entry.id === 'index' ? '' : entry.id.replace(/\/index$/, '');
+	const pagePath = ensureTrailingSlash(
+		ensureTrailingSlash(starlightLllmsTxtContext.base) + slug
+	);
 	const file = await htmlToMarkdownPipeline.process({
 		value: html,
-		data: { starlightLlmsTxt: { minify: shouldMinify } },
+		data: { starlightLlmsTxt: { minify: shouldMinify, pagePath } },
 	});
 	let markdown = String(file).trim();
 	if (shouldMinify && minify.whitespace) {
