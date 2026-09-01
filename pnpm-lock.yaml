@@ -18,7 +18,7 @@ importers:
   docs:
     dependencies:
       '@astrojs/starlight':
-        specifier: ^0.41.9
+        specifier: ^0.41.10
         version: 0.41.10(@astrojs/markdown-remark@7.2.4(supports-color@7.2.0))(astro@7.2.9(@astrojs/markdown-remark@7.2.4(supports-color@7.2.0))(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.10.1)(yaml@2.9.0))(supports-color@7.2.0)
       astro:
         specifier: ^7.2.9
@@ -73,7 +73,7 @@ importers:
         version: 4.0.0
     devDependencies:
       '@astrojs/starlight':
-        specifier: ^0.41.9
+        specifier: ^0.41.10
         version: 0.41.10(@astrojs/markdown-remark@7.2.4(supports-color@7.2.0))(astro@7.2.9(@astrojs/markdown-remark@7.2.4(supports-color@7.2.0))(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.10.1)(yaml@2.9.0))(supports-color@7.2.0)
       astro:
         specifier: ^7.2.9
