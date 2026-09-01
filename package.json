@@ -23,6 +23,6 @@
 	},
 	"dependencies": {
 		"@changesets/changelog-github": "^1.0.0",
-		"@changesets/cli": "^3.0.0"
+		"@changesets/cli": "^3.0.1"
 	}
 }
