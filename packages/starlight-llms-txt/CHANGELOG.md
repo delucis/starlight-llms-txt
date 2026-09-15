@@ -1,5 +1,11 @@
 # starlight-llms-txt
 
+## 0.12.0
+
+### Minor Changes
+
+- [#166](https://github.com/delucis/starlight-llms-txt/pull/166) [`92e4845`](https://github.com/delucis/starlight-llms-txt/commit/92e4845f6025be8f406c1999a436031673fd110f) Thanks [@renovate](https://github.com/apps/renovate)! - Updates `@astrojs/mdx` to the latest release
+
 ## 0.11.0
 
 ### Minor Changes
