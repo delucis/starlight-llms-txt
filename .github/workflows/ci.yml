@@ -17,3 +17,4 @@ jobs:
           cache: pnpm
       - run: pnpm i
       - run: pnpm --filter ./docs build
+      - run: pnpm --filter ./docs check:parity

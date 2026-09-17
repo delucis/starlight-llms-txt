@@ -10,7 +10,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:parity": "node scripts/check-parity.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.0",
@@ -18,6 +19,9 @@
     "sharp": "^0.35.4",
     "starlight-llms-txt": "workspace:*",
     "starlight-package-managers": "^0.12.0"
+  },
+  "devDependencies": {
+    "markdown-parity-check": "0.2.9"
   },
   "engines": {
     "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
