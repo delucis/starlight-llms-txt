@@ -508,8 +508,8 @@ if [ -f "$watcher" ]; then
     grep -qE '\[PROGRESS\].*repository' "$watcher_collector"
   check 'Free-tier contract remains explicit' \
     grep -qF 'GitHub Free-compatible' "$watcher"
-  check 'central content reconciler uses the managed socketless ARC route' \
-    grep -qF 'runs-on: managed-socketless' "$content_reconciler"
+  check 'central content reconciler uses the hosted release-automation route' \
+    grep -qF 'runs-on: ubuntu-latest' "$content_reconciler"
   check 'central content reconciler has an explicit job name' \
     grep -qF '    name: Reconcile fleet content' "$content_reconciler"
   check 'central content reconciler binds secrets to the repository-settings environment' \

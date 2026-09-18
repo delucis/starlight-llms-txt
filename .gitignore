@@ -72,6 +72,7 @@ wheels/
 # Terraform
 .terraform/
 .terraform.lock.hcl
+!terraform/aws/.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 crash.log

@@ -34,7 +34,7 @@ self-hosted-runner:
     - managed-socketless
     - marketplace
     - marketplace-claude-code
-    - mcn
+    - multi-cloud-networking
     - nginx
     - observability
     - origin-server
@@ -52,6 +52,8 @@ self-hosted-runner:
     - xcsh-action
     - xcsh-chrome-extension
     - xcsh-compute
+    - xcsh-compute-16-vcpu-candidate
+    - xcsh-compute-f32-candidate
     - xcsh-container-build
     - xcsh-socketless
 

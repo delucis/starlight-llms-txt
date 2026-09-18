@@ -4,7 +4,7 @@
 # Neither of the two linters that own prose can see .mdx on its own. pre-commit's
 # markdownlint hook selects `types: [markdown]` and `identify` tags .mdx as `mdx`;
 # Super-Linter v8.7.0 routes only the `md` extension into MARKDOWN and
-# NATURAL_LANGUAGE. So a repository whose documentation is .mdx — mcn's docs/en is
+# NATURAL_LANGUAGE. So a repository whose documentation is .mdx — multi-cloud-networking's docs/en is
 # 100% .mdx — passes both gates without either having opened a file.
 #
 # The linters are stubbed on PATH so this test asserts our selection and exit

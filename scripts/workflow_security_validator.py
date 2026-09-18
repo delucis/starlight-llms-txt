@@ -90,6 +90,34 @@ CANONICAL_SUPER_LINTER_INPUTS = {
     "container_build_runner_label": "${{ github.repository == 'f5-sales-demo/xcsh' && 'xcsh-container-build' || 'managed-container-build' }}",
 }
 XCSH_REPOSITORY = "f5-sales-demo/xcsh"
+XCSH_COMPUTE_WORKFLOW = ".github/workflows/compute-benchmark.yml"
+XCSH_MANUAL_COMPUTE_ROUTE_EXPRESSION = "${{ needs.prepare.outputs.runner_label }}"
+XCSH_MANUAL_COMPUTE_ROUTE_LABELS = {
+    "workload": frozenset(
+        {
+            "xcsh-compute",
+            "xcsh-compute-16-vcpu-candidate",
+            "xcsh-compute-f32-candidate",
+        }
+    ),
+    "dag-control": frozenset({"xcsh-compute-16-vcpu-candidate"}),
+    "dag-candidate-native": frozenset({"xcsh-compute-16-vcpu-candidate"}),
+    "dag-candidate-rust": frozenset({"xcsh-compute-16-vcpu-candidate"}),
+    "dag-candidate-typescript": frozenset({"xcsh-compute-16-vcpu-candidate"}),
+}
+XCSH_CANDIDATE_RESTRICTED_GRANTS = {
+    label: frozenset(
+        (XCSH_REPOSITORY, XCSH_COMPUTE_WORKFLOW, job_id)
+        for job_id, labels in XCSH_MANUAL_COMPUTE_ROUTE_LABELS.items()
+        if label in labels
+    )
+    for label in (
+        "xcsh-compute-16-vcpu-candidate",
+        "xcsh-compute-f32-candidate",
+    )
+}
+# fmt: off
+XCSH_CANDIDATE_GRANT_IDENTITIES = frozenset().union(*XCSH_CANDIDATE_RESTRICTED_GRANTS.values())
 DOCS_ICONS_REPOSITORY = "f5-sales-demo/docs-icons"
 DOCS_SOCKETLESS_ROUTE_EXPRESSION = "${{ github.repository == 'f5-sales-demo/docs-icons' && 'docs-socketless' || 'managed-socketless' }}"  # fmt: skip
 DOCS_SOCKETLESS_ROUTE_LABELS = {DOCS_ICONS_REPOSITORY: "docs-socketless"}
@@ -169,7 +197,7 @@ MANAGED_ARC_COHORT = frozenset(
         "docs-control",
         "marketplace",
         "marketplace-claude-code",
-        "mcn",
+        "multi-cloud-networking",
         "nginx",
         "observability",
         "origin-server",
@@ -262,6 +290,16 @@ ARC_SHARED_CONTRACTS = (
         },
     ),
 )
+XCSH_CANDIDATE_SCALE_SETS = {
+    "compute-16-vcpu-candidate": {
+        "label": "xcsh-compute-16-vcpu-candidate",
+        "attestation": "xcsh-compute-16-vcpu-candidate",
+    },
+    "compute-f32-candidate": {
+        "label": "xcsh-compute-f32-candidate",
+        "attestation": "xcsh-compute-f32-candidate",
+    },
+}
 RESERVED_ARC_LABELS = frozenset(
     {
         "api-specs-enriched-compute",
@@ -272,6 +310,8 @@ RESERVED_ARC_LABELS = frozenset(
         "terraform-provider-xcsh-compute",
         "xcsh-container-build",
         "xcsh-compute",
+        "xcsh-compute-16-vcpu-candidate",
+        "xcsh-compute-f32-candidate",
         "xcsh-socketless",
     }
 )
@@ -285,8 +325,45 @@ def expected_arc_scale_sets(repository):
     return None
 
 
+def arc_scale_sets_match_contract(repository, scale_sets):
+    """Accept the stable contract or xcsh's exact temporary benchmark extension."""
+    expected = expected_arc_scale_sets(repository)
+    if scale_sets == expected:
+        return True
+    if repository != XCSH_REPOSITORY or expected is None:
+        return False
+    return scale_sets == {**expected, **XCSH_CANDIDATE_SCALE_SETS}
+
+
+def validate_xcsh_candidate_grants(repository, scale_sets, restricted_routes):
+    """Require the exact manual-job grant set for each xcsh candidate label."""
+    expected_scale_sets = expected_arc_scale_sets(repository)
+    candidate_contract = (
+        repository == XCSH_REPOSITORY
+        and expected_scale_sets is not None
+        and scale_sets == {**expected_scale_sets, **XCSH_CANDIDATE_SCALE_SETS}
+    )
+    if not candidate_contract:
+        return
+    for label, expected in XCSH_CANDIDATE_RESTRICTED_GRANTS.items():
+        grants = (restricted_routes or {}).get(label, [])
+        actual = {
+            (grant.get("repository"), grant.get("workflow"), grant.get("job"))
+            for grant in grants
+            if isinstance(grant, dict)
+        }
+        if actual != expected:
+            raise PolicyError(f"xcsh candidate grants are invalid for {label}")
+
+
 class PolicyError(ValueError):
     pass
+
+
+def benchmark_trust_guard_is_allowed(repository, relative, job_id, route_label, guard):
+    """Require the generic same-repository guard for direct restricted routes."""
+    del repository, relative, job_id, route_label
+    return guard == BENCHMARK_TRUST_GUARD
 
 
 def validate_zizmor_result(exit_code, findings):
@@ -306,10 +383,14 @@ def validate_zizmor_result(exit_code, findings):
             raise PolicyError(f"Zizmor finding {index} must be an object")
         determinations = finding.get("determinations")
         if not isinstance(determinations, dict):
-            raise PolicyError(f"Zizmor finding {index} determinations must be an object")
+            raise PolicyError(
+                f"Zizmor finding {index} determinations must be an object"
+            )
         severity = determinations.get("severity")
         if severity not in ZIZMOR_EXIT_BY_SEVERITY:
-            raise PolicyError(f"Zizmor finding {index} has invalid severity: {severity!r}")
+            raise PolicyError(
+                f"Zizmor finding {index} has invalid severity: {severity!r}"
+            )
         expected_exit = max(expected_exit, ZIZMOR_EXIT_BY_SEVERITY[severity])
 
     if exit_code != expected_exit:
@@ -386,7 +467,9 @@ def validate_arc_contract(attestations, restricted_routes):
             or not isinstance(repositories, list)
             or not repositories
             or len(repositories) != len(set(repositories))
-            or not all(isinstance(item, str) and item.count("/") == 1 for item in repositories)
+            or not all(
+                isinstance(item, str) and item.count("/") == 1 for item in repositories
+            )
         ):
             raise PolicyError(f"ARC attestation is malformed: {name}")
         labels.add(label)
@@ -457,7 +540,9 @@ def repository_runner_routes(
                     or attestation.get("label") != label
                     or repository not in attestation.get("repositories", [])
                 ):
-                    raise PolicyError("ARC scale set attestation does not authorize repository")
+                    raise PolicyError(
+                        "ARC scale set attestation does not authorize repository"
+                    )
                 profile = default_profile
                 attestations_by_label[label] = attestation
             elif not isinstance(profile, str) or profile not in profiles:
@@ -466,10 +551,11 @@ def repository_runner_routes(
                 raise PolicyError(f"duplicate ARC scale set label: {label}")
             profiles_by_label[label] = profile
         expected = expected_arc_scale_sets(repository)
-        if expected is not None and scale_sets != expected:
-            raise PolicyError(
-                f"{repository} ARC scale-set contract is invalid"
-            )
+        if expected is not None and not arc_scale_sets_match_contract(
+            repository, scale_sets
+        ):
+            raise PolicyError(f"{repository} ARC scale-set contract is invalid")
+        validate_xcsh_candidate_grants(repository, scale_sets, restricted_routes)
         if expected is None:
             leaked = set(profiles_by_label) & RESERVED_ARC_LABELS
             if leaked:
@@ -509,15 +595,15 @@ def repository_runner_routes(
     specs_by_route: dict[tuple, object] = {}
     for profile in allowed:
         spec = profiles[profile]
-        labels = (
-            spec.get("labels", [profile]) if isinstance(spec, dict) else None
-        )
+        labels = spec.get("labels", [profile]) if isinstance(spec, dict) else None
         if (
             not isinstance(labels, list)
             or len(labels) != 1
             or not isinstance(labels[0], str)
         ):
-            raise PolicyError(f"profile {profile!r} must define exactly one route label")
+            raise PolicyError(
+                f"profile {profile!r} must define exactly one route label"
+            )
         for repository_label in (basename, "${{ github.event.repository.name }}"):
             route = ("self-hosted", "Linux", "X64", repository_label, labels[0])
             if route in profiles_by_route and specs_by_route[route] != spec:
@@ -551,6 +637,20 @@ def canonical_route_label(value, repository):
         if value == expression:
             return label
     return value
+
+
+def trusted_dynamic_route_labels(repository, relative, job_id, runs_on, workflow):
+    """Resolve the one manual xcsh route expression in its exact job context."""
+    triggers = workflow_on(workflow)
+    if (
+        repository != XCSH_REPOSITORY
+        or relative != XCSH_COMPUTE_WORKFLOW
+        or runs_on != XCSH_MANUAL_COMPUTE_ROUTE_EXPRESSION
+        or not isinstance(triggers, dict)
+        or set(triggers) != {"workflow_dispatch"}
+    ):
+        return None
+    return XCSH_MANUAL_COMPUTE_ROUTE_LABELS.get(job_id)
 
 
 def resolve_route(runs_on, routes, repository=None):
@@ -593,7 +693,9 @@ def validate_reusable_runner_inputs(job, routes, default_profile, repository):
             raise PolicyError("ARC reusable workflow call requires both runner labels")
         return
     if routes["kind"] != "arc":
-        raise PolicyError("legacy reusable workflow calls cannot override runner labels")
+        raise PolicyError(
+            "legacy reusable workflow calls cannot override runner labels"
+        )
     conditional = set()
     for name, value in values.items():
         if value == CANONICAL_SUPER_LINTER_INPUTS[name]:
@@ -610,7 +712,9 @@ def validate_reusable_runner_inputs(job, routes, default_profile, repository):
     }
     for name, expected_profile in expected_profiles.items():
         value = values[name]
-        if not isinstance(value, str) or not re.fullmatch(r"[a-z0-9][a-z0-9.-]*", value):
+        if not isinstance(value, str) or not re.fullmatch(
+            r"[a-z0-9][a-z0-9.-]*", value
+        ):
             raise PolicyError(f"{name} must be a safe scalar label")
         if routes["profiles_by_route"].get(value) != expected_profile:
             raise PolicyError(f"{name} does not match its policy-approved profile")
@@ -702,7 +806,10 @@ def load_policy(path, governance_path, repository):
                 else isinstance(configured_route, list)
                 and all(isinstance(item, str) for item in configured_route)
             )
-            if not route_type_is_valid or resolve_route(configured_route, routes) is None:
+            if (
+                not route_type_is_valid
+                or resolve_route(configured_route, routes) is None
+            ):
                 raise PolicyError(
                     f"{workflow}/{job_id}.runs_on must be one canonical repository route"
                 )
@@ -779,7 +886,9 @@ def normalize_location(location):
         )
     workflow_roots = (".github/workflows/", "workflows/")
     if not normalized.startswith(workflow_roots):
-        raise PolicyError(f"finding path is outside governed workflow roots: {normalized!r}")
+        raise PolicyError(
+            f"finding path is outside governed workflow roots: {normalized!r}"
+        )
     return normalized, parts[index + 1], parts
 
 
@@ -997,9 +1106,27 @@ def inventory(root, repository, policy, default_profile, routes):
             if "uses" in job:
                 validate_reusable_runner_inputs(job, routes, default_profile, repository)  # fmt: skip
             runs_on = job.get("runs-on")
+            identity = (repository, relative, job_id)
+            dynamic_route_labels = trusted_dynamic_route_labels(
+                repository,
+                relative,
+                job_id,
+                runs_on,
+                workflow,
+            )
+            is_candidate_job = identity in XCSH_CANDIDATE_GRANT_IDENTITIES
+            is_manual_route = runs_on == XCSH_MANUAL_COMPUTE_ROUTE_EXPRESSION
+            if is_candidate_job and not is_manual_route:
+                message = (
+                    "xcsh candidate job requires the exact manual route expression"
+                )
+                raise PolicyError(f"{relative}/{job_id}: {message}")
+            if is_manual_route and dynamic_route_labels is None:
+                message = "xcsh manual route requires its workflow_dispatch job context"
+                raise PolicyError(f"{relative}/{job_id}: {message}")
             if (
                 any(
-                    (repository, relative, job_id) in grants
+                    identity in grants
                     for grants in routes.get("restricted_grants", {}).values()
                 )
                 and isinstance(runs_on, str)
@@ -1009,7 +1136,11 @@ def inventory(root, repository, policy, default_profile, routes):
                     f"{relative}/{job_id}: restricted-route repositories forbid matrix or dispatch-controlled runs-on"
                 )
             resolved_profile = resolve_route(runs_on, routes, repository)
-            route_label = canonical_route_label(runs_on, repository)
+            if dynamic_route_labels is not None:
+                profiles_by_route = routes["profiles_by_route"]
+                dynamic_profiles = set(map(profiles_by_route.get, dynamic_route_labels))
+                if None not in dynamic_profiles and len(dynamic_profiles) == 1:
+                    resolved_profile = next(iter(dynamic_profiles))
             internal_profile = reusable_definition_profile(
                 repository, relative, job_id, runs_on
             )
@@ -1037,14 +1168,23 @@ def inventory(root, repository, policy, default_profile, routes):
                     raise PolicyError(
                         f"{relative}/{job_id}: runs-on must use the canonical repository route"
                     )
-                grants = routes.get("restricted_grants", {}).get(route_label)
-                if grants is not None:
-                    identity = (repository, relative, job_id)
+                canonical_label = canonical_route_label(runs_on, repository)
+                route_labels = dynamic_route_labels or frozenset({canonical_label})
+                for route_label in route_labels:
+                    grants = routes.get("restricted_grants", {}).get(route_label)
+                    if grants is None:
+                        continue
                     if identity not in grants:
                         raise PolicyError(
                             f"{relative}/{job_id}: restricted runner route is not allowlisted"
                         )
-                    if runs_on == route_label and job.get("if") != BENCHMARK_TRUST_GUARD:
+                    if runs_on == route_label and not benchmark_trust_guard_is_allowed(
+                        repository,
+                        relative,
+                        job_id,
+                        route_label,
+                        job.get("if"),
+                    ):
                         raise PolicyError(
                             f"{relative}/{job_id}: direct restricted route requires the exact same-repository benchmark guard"
                         )
@@ -1060,9 +1200,7 @@ def inventory(root, repository, policy, default_profile, routes):
                         routes,
                     )
                     if errors:
-                        raise PolicyError(
-                            f"{relative}/{job_id}: " + "; ".join(errors)
-                        )
+                        raise PolicyError(f"{relative}/{job_id}: " + "; ".join(errors))
                 if internal_profile is None:
                     actual[key] = workflow
     unused = sorted(set(policy) - set(actual))
@@ -1077,9 +1215,7 @@ def validate(findings, root, repository, policy_path, governance_path):
     policy, default_profile, repository_routes = load_policy(
         policy_path, governance_path, repository
     )
-    actual = inventory(
-        root, repository, policy, default_profile, repository_routes
-    )
+    actual = inventory(root, repository, policy, default_profile, repository_routes)
     if repository_routes["kind"] == "arc":
         if findings:
             raise PolicyError(

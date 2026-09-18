@@ -24,7 +24,7 @@
   },
   "profiles": {
     "ubuntu-24.04": {
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:2a0243be5404daa0f52bae16384f53dbc04554e31406ed0db45152d92f6187e1",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
       "labels": ["ubuntu-24.04"],
       "memory": "8g",
       "cpus": "4",
@@ -34,7 +34,7 @@
       "docker_socket": false
     },
     "ubuntu-24.04-secondary": {
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:2a0243be5404daa0f52bae16384f53dbc04554e31406ed0db45152d92f6187e1",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
       "labels": ["ubuntu-24.04"],
       "memory": "8g",
       "cpus": "4",
@@ -44,7 +44,7 @@
       "docker_socket": false
     },
     "automation": {
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:2a0243be5404daa0f52bae16384f53dbc04554e31406ed0db45152d92f6187e1",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
       "labels": ["automation"],
       "memory": "8g",
       "cpus": "4",
@@ -64,7 +64,7 @@
       "docker_socket": false
     },
     "container-build": {
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:14d73659768abaa4ace29b44ab9e058b9a789621eb775849223b69e2538b0eca",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:676d9ff1789084e33bc92eac08d247c1d9f3be4fa3ed594ba7a68c7644783e9e",
       "labels": ["container-build"],
       "memory": "16g",
       "cpus": "6",
@@ -78,7 +78,7 @@
     "terraform-provider-xcsh-d8": {
       "label": "managed-socketless",
       "runner_profile": "socketless",
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:2a0243be5404daa0f52bae16384f53dbc04554e31406ed0db45152d92f6187e1",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
       "vm_size": "Standard_D8ads_v5",
       "cpu_limit": 7,
       "memory_limit_bytes": 30064771072,
@@ -88,12 +88,32 @@
     "terraform-provider-xcsh-d16": {
       "label": "terraform-provider-xcsh-compute",
       "runner_profile": "compute",
-      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:2a0243be5404daa0f52bae16384f53dbc04554e31406ed0db45152d92f6187e1",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
       "vm_size": "Standard_D16ads_v5",
       "cpu_limit": 15,
       "memory_limit_bytes": 60129542144,
       "docker_socket": false,
       "repositories": ["f5-sales-demo/terraform-provider-xcsh"]
+    },
+    "xcsh-compute-16-vcpu-candidate": {
+      "label": "xcsh-compute-16-vcpu-candidate",
+      "runner_profile": "compute-16-vcpu-candidate",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
+      "vm_size": "Standard_D16ads_v5",
+      "cpu_limit": 15,
+      "memory_limit_bytes": 60129542144,
+      "docker_socket": false,
+      "repositories": ["f5-sales-demo/xcsh"]
+    },
+    "xcsh-compute-f32-candidate": {
+      "label": "xcsh-compute-f32-candidate",
+      "runner_profile": "compute-f32-candidate",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:1fadcbbdaf80f69c81b028b14cd1238d9a4631d95e035dbfd810a5487cd3e1ca",
+      "vm_size": "Standard_F32s_v2",
+      "cpu_limit": 15,
+      "memory_limit_bytes": 32212254720,
+      "docker_socket": false,
+      "repositories": ["f5-sales-demo/xcsh"]
     }
   },
   "restricted_routes": {
@@ -103,10 +123,50 @@
         "workflow": ".github/workflows/workload-benchmark.yml",
         "job": "benchmark-d16"
       }
+    ],
+    "xcsh-compute-16-vcpu-candidate": [
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "workload"
+      },
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "dag-control"
+      },
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "dag-candidate-native"
+      },
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "dag-candidate-rust"
+      },
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "dag-candidate-typescript"
+      }
+    ],
+    "xcsh-compute-f32-candidate": [
+      {
+        "repository": "f5-sales-demo/xcsh",
+        "workflow": ".github/workflows/compute-benchmark.yml",
+        "job": "workload"
+      }
     ]
   },
   "hosted_exceptions": {
     "f5-sales-demo/api-specs-enriched": {
+      ".github/workflows/require-linked-issue.yml": {
+        "check-linked-issues": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only AWS and KVM release-chain pull request policy"
+        }
+      },
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -133,6 +193,50 @@
       }
     },
     "f5-sales-demo/docs-control": {
+      ".github/workflows/attest-manifest-linked-issue.yml": {
+        "attest": {
+          "runs_on": "ubuntu-latest",
+          "reason": "manifest receipt attestation requires available hosted release automation"
+        }
+      },
+      ".github/workflows/build-managed-files-manifest.yml": {
+        "build": {
+          "runs_on": "ubuntu-latest",
+          "reason": "manifest publication requires available hosted release automation"
+        }
+      },
+      ".github/workflows/require-linked-issue.yml": {
+        "validate-pull-request": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only pull request policy for runner governance changes"
+        }
+      },
+      ".github/workflows/reconcile-fleet-content.yml": {
+        "reconcile": {
+          "runs_on": "ubuntu-latest",
+          "reason": "managed content reconciliation requires available hosted release automation"
+        }
+      },
+      ".github/workflows/super-linter.yml": {
+        "trust-gate": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free trust validation for governance pull requests"
+        },
+        "lint": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "credential-free governance lint with hosted Docker"
+        },
+        "shell-unit-tests": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free governance shell and unit tests"
+        }
+      },
+      ".github/workflows/update-governed-workflow-pins.yml": {
+        "update": {
+          "runs_on": "ubuntu-latest",
+          "reason": "governed pin publication requires available hosted release automation"
+        }
+      },
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -174,21 +278,27 @@
         }
       },
       ".github/workflows/ci.yml": {
+        "image-runtime": {
+          "runs_on": "matrix",
+          "reason": "image runtime qualification requires hosted platform-specific environments"
+        },
         "native": {
           "runs_on": "matrix",
           "reason": "native builds require hosted platform-specific toolchains"
-        },
-        "setup-zig": {
-          "runs_on": "matrix",
-          "reason": "Zig verification requires native macOS and Windows toolchains"
         },
         "build-sign-macos": {
           "runs_on": "matrix",
           "reason": "Apple signing and notarization require macOS"
         },
         "verify-homebrew-install": {
-          "runs_on": "macos-14",
-          "reason": "Homebrew release verification requires macOS"
+          "runs_on": "matrix",
+          "reason": "Homebrew cask release verification requires Apple silicon and Intel macOS"
+        }
+      },
+      ".github/workflows/release-homebrew-backfill.yml": {
+        "verify-homebrew-install": {
+          "runs_on": "matrix",
+          "reason": "Homebrew cask release verification requires Apple silicon and Intel macOS"
         }
       },
       ".github/workflows/console-catalog-drift.yml": {
@@ -201,6 +311,16 @@
         "update-console-catalog": {
           "runs_on": "ubuntu-22.04",
           "reason": "catalog publishing uses the hosted GitHub environment"
+        }
+      },
+      ".github/workflows/compute-benchmark.yml": {
+        "dag-control-summary": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "DAG control summary uses the hosted GitHub API environment"
+        },
+        "dag-candidate-summary": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "DAG candidate summary uses the hosted GitHub API environment"
         }
       },
       ".github/workflows/deploy-office-pane.yml": {
@@ -401,6 +521,12 @@
       }
     },
     "f5-sales-demo/docs-theme": {
+      ".github/workflows/release.yml": {
+        "release": {
+          "runs_on": "ubuntu-latest",
+          "reason": "npm provenance requires a GitHub-hosted publishing environment"
+        }
+      },
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -417,6 +543,12 @@
       }
     },
     "f5-sales-demo/marketplace": {
+      ".github/workflows/require-linked-issue.yml": {
+        "check-linked-issues": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only AWS and KVM release-chain pull request policy"
+        }
+      },
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -432,7 +564,23 @@
         }
       }
     },
-    "f5-sales-demo/mcn": {
+    "f5-sales-demo/multi-cloud-networking": {
+      ".github/workflows/require-linked-issue.yml": {
+        "check-linked-issues": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only AWS and KVM release-chain pull request policy"
+        }
+      },
+      ".github/workflows/terraform.yml": {
+        "validate": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free Terraform validation for the AWS and KVM showcase"
+        },
+        "coverage-smsv2": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free provider contract validation for the AWS and KVM showcase"
+        }
+      },
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -521,6 +669,26 @@
       }
     },
     "f5-sales-demo/terraform-provider-xcsh": {
+      ".github/workflows/acc-tests.yml": {
+        "mock-tests": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free provider mock acceptance tests"
+        },
+        "compare-results": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free provider mock result comparison"
+        },
+        "summary": {
+          "runs_on": "ubuntu-latest",
+          "reason": "credential-free provider acceptance result summary"
+        }
+      },
+      ".github/workflows/require-linked-issue.yml": {
+        "check-linked-issues": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only AWS and KVM release-chain pull request policy"
+        }
+      },
       ".github/workflows/_build-test.yml": {
         "build": {
           "runs_on": "ubuntu-latest",
@@ -876,7 +1044,7 @@
         }
       }
     },
-    "f5-sales-demo/mcn": {
+    "f5-sales-demo/multi-cloud-networking": {
       "runner": {
         "arc_scale_sets": {
           "socketless": {
@@ -1038,6 +1206,14 @@
           "compute": {
             "label": "xcsh-compute",
             "profile": "ubuntu-24.04"
+          },
+          "compute-16-vcpu-candidate": {
+            "label": "xcsh-compute-16-vcpu-candidate",
+            "attestation": "xcsh-compute-16-vcpu-candidate"
+          },
+          "compute-f32-candidate": {
+            "label": "xcsh-compute-f32-candidate",
+            "attestation": "xcsh-compute-f32-candidate"
           }
         }
       }
