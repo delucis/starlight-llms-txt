@@ -25,6 +25,7 @@ repository classes for every coding assistant.
   in docs-control.
 - Read task-relevant `CONTRIBUTING.md` and `DEVELOPING.md` sections. A closer `AGENTS.md` may add
   subtree guidance.
+- If `ISSUES.md` exists, follow it for issue review and intake.
 
 ## Translations
 

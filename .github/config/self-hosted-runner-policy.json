@@ -286,6 +286,10 @@
           "runs_on": "matrix",
           "reason": "native builds require hosted platform-specific toolchains"
         },
+        "publish-npm": {
+          "runs_on": "ubuntu-22.04",
+          "reason": "npm OIDC publishing requires a GitHub-hosted environment"
+        },
         "build-sign-macos": {
           "runs_on": "matrix",
           "reason": "Apple signing and notarization require macOS"
@@ -543,6 +547,16 @@
       }
     },
     "f5-sales-demo/marketplace": {
+      ".github/workflows/herdr-installer.yml": {
+        "unix": {
+          "runs_on": "matrix",
+          "reason": "native Herdr installation requires Linux and macOS hosted environments"
+        },
+        "windows": {
+          "runs_on": "windows-latest",
+          "reason": "native Herdr installation requires a Windows hosted environment"
+        }
+      },
       ".github/workflows/require-linked-issue.yml": {
         "check-linked-issues": {
           "runs_on": "ubuntu-latest",
