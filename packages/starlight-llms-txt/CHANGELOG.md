@@ -1,5 +1,13 @@
 # starlight-llms-txt
 
+## 2.1.0
+
+### Minor Changes
+
+- [#651](https://github.com/f5-sales-demo/starlight-llms-txt/pull/651) [`cee3ef6`](https://github.com/f5-sales-demo/starlight-llms-txt/commit/cee3ef6613f459a4bd42ccdd070606019ce74c14) Thanks [@robinmordasiewicz](https://github.com/robinmordasiewicz)! - # Progressive external corpora
+  
+  Add progressive, English-only machine-readable routes for verified external Markdown corpora.
+
 ## 2.0.0
 
 ### Major Changes
