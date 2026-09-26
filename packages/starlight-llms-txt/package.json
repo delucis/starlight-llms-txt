@@ -26,7 +26,8 @@
     "remark-gfm": "^4.0.1",
     "remark-stringify": "^11.0.0",
     "unified": "^11.0.5",
-    "unist-util-remove": "^4.0.0"
+    "unist-util-remove": "^4.0.0",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.41.9",

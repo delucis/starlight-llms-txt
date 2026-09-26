@@ -76,6 +76,9 @@ importers:
       unist-util-remove:
         specifier: ^4.0.0
         version: 4.0.0
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
     devDependencies:
       '@astrojs/starlight':
         specifier: ^0.41.9
@@ -625,7 +628,7 @@ packages:
     os: [darwin]
 
   '@img/sharp-freebsd-wasm32@0.35.4':
-    resolution: {integrity: sha512-lIsKw/BU+kjB4eZjxrYrZmwOJYi3Ajrv66iAlBmUPyKc3HpnloevB1g3wxGD9P/5BbQ1brBGl65VRRrCvQDEqA==}
+    resolution: {integrity: "sha512-lIsKw/\x42U+kjB4eZjxrYrZmwOJYi3Ajrv66iAlBmUPyKc3HpnloevB1g3wxGD9P/5BbQ1brBGl65VRRrCvQDEqA=="}
     engines: {node: '>=20.9.0'}
     os: [freebsd]
 

@@ -1,6 +1,9 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types';
 import { AstroError } from 'astro/errors';
+import { getLlmsRoutePlan } from './route-plan';
 import type { ProjectContext, StarlightLllmsTextOptions } from './types';
+
+export type { ProgressiveCorpusOptions } from './types';
 
 export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): StarlightPlugin {
   return {
@@ -17,43 +20,12 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
           name: 'starlight-llms-txt',
           hooks: {
             'astro:config:setup'({ injectRoute, updateConfig }) {
-              injectRoute({
-                entrypoint: new URL('./llms.txt.ts', import.meta.url),
-                pattern: '/llms.txt',
-                prerender: true,
-              });
-              injectRoute({
-                entrypoint: new URL('./llms-full.txt.ts', import.meta.url),
-                pattern: '/llms-full.txt',
-                prerender: true,
-              });
-              injectRoute({
-                entrypoint: new URL('./llms-small.txt.ts', import.meta.url),
-                pattern: '/llms-small.txt',
-                prerender: true,
-              });
-
-              injectRoute({
-                entrypoint: new URL('./llms-locale.txt.ts', import.meta.url),
-                pattern: '/[locale]/llms.txt',
-                prerender: true,
-              });
-              injectRoute({
-                entrypoint: new URL('./llms-locale-full.txt.ts', import.meta.url),
-                pattern: '/[locale]/llms-full.txt',
-                prerender: true,
-              });
-              injectRoute({
-                entrypoint: new URL('./llms-locale-small.txt.ts', import.meta.url),
-                pattern: '/[locale]/llms-small.txt',
-                prerender: true,
-              });
-
-              const tieredHierarchy = opts.tieredHierarchy ?? true;
-              if (tieredHierarchy) {
+              const progressiveCorpus = opts.progressiveCorpus;
+              const tieredHierarchy = progressiveCorpus ? true : (opts.tieredHierarchy ?? true);
+              for (const route of getLlmsRoutePlan(Boolean(progressiveCorpus), tieredHierarchy)) {
                 injectRoute({
-                  entrypoint: new URL('./llms-tiered.txt.ts', import.meta.url),
-                  pattern: '/_llms-txt/[...path].txt',
+                  entrypoint: new URL(route.entrypoint, import.meta.url),
+                  pattern: route.pattern,
                   prerender: true,
                 });
               }
@@ -76,6 +48,7 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
                 tieredHierarchy,
                 federatedSites: opts.federatedSites ?? [],
                 federatedSiteCategories: opts.federatedSiteCategories ?? [],
+                ...(progressiveCorpus ? { progressiveCorpus } : {}),
               };
 
               const modules = {
@@ -94,10 +67,12 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
                       name: 'vite-plugin-starlight-llms-text',
                       resolveId(id): string | undefined {
                         if (id in modules) return resolveVirtualModuleId(id);
+                        return undefined;
                       },
                       load(id): string | undefined {
                         const resolution = resolutionMap[id];
                         if (resolution) return modules[resolution];
+                        return undefined;
                       },
                     },
                   ],

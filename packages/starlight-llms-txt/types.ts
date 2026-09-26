@@ -1,5 +1,8 @@
 import type { StarlightUserConfig } from '@astrojs/starlight/types';
 import type { AstroConfig } from 'astro';
+import type { ProgressiveCorpusOptions } from './progressive-corpus';
+
+export type { ProgressiveCorpusOptions } from './progressive-corpus';
 
 interface FederatedSiteCategoryUserConfig {
   id: string;
@@ -25,6 +28,7 @@ export interface ProjectContext {
   tieredHierarchy: NonNullable<StarlightLllmsTextOptions['tieredHierarchy']>;
   federatedSites: NonNullable<StarlightLllmsTextOptions['federatedSites']>;
   federatedSiteCategories: NonNullable<StarlightLllmsTextOptions['federatedSiteCategories']>;
+  progressiveCorpus?: ProgressiveCorpusOptions | undefined;
 }
 
 export interface StarlightLllmsTextOptions {
@@ -59,4 +63,9 @@ export interface StarlightLllmsTextOptions {
     category?: string;
   }>;
   federatedSiteCategories?: Array<FederatedSiteCategoryUserConfig>;
+  /**
+   * Generate an English-only progressive hierarchy from a verified Markdown
+   * corpus outside Starlight's docs collection.
+   */
+  progressiveCorpus?: ProgressiveCorpusOptions;
 }
