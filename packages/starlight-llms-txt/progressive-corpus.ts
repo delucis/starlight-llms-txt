@@ -223,7 +223,7 @@ function buildTaxonomyTree(entries: ProgressiveEntry[], options: ProgressiveCorp
     });
     for (const categoryName of [...byCategory.keys()].sort(compareText)) {
       const categorySegment = taxonomySlug(categoryName);
-      const categoryRoute = `${sourceId}/${categorySegment}`;
+      const categoryRoute = `${sourceId}/_taxonomy/${categorySegment}`;
       reserve(categoryRoute);
       const category = directory(categoryRoute, categorySegment, categoryName);
       source.children.set(categorySegment, category);

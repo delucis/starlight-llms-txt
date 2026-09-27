@@ -39,7 +39,8 @@ narrower `/_llms-txt/<source>/<path>.txt` routes. It deliberately omits
 When taxonomy is configured, every document must declare a nonempty `category`.
 Documents are grouped by `category` and then `subcategory`; singleton or missing
 subcategories can link directly from the category while terminal document URLs
-remain derived from their canonical source paths. The first-sentence hint policy
+remain derived from their canonical source paths. Semantic indices use the
+reserved `/<source>/_taxonomy/` namespace. The first-sentence hint policy
 removes markup, emits one line, and bounds hints without changing document bodies.
 
 See the [configuration docs](https://f5-sales-demo.github.io/starlight-llms-txt/configuration/) for the full option reference.

@@ -85,10 +85,10 @@ describe('buildProgressiveCorpus', () => {
     const { corpus } = semanticFixture();
     expect(getProgressivePaths(corpus.root)).toEqual([
       { path: 'source', type: 'directory' },
-      { path: 'source/api-reference', type: 'directory' },
+      { path: 'source/_taxonomy/api-reference', type: 'directory' },
       { path: 'source/reference', type: 'leaf' },
-      { path: 'source/getting-started', type: 'directory' },
-      { path: 'source/getting-started/installation', type: 'directory' },
+      { path: 'source/_taxonomy/getting-started', type: 'directory' },
+      { path: 'source/_taxonomy/getting-started/installation', type: 'directory' },
       { path: 'source/install/linux', type: 'leaf' },
       { path: 'source/install/macos', type: 'leaf' },
       { path: 'source/quickstart', type: 'leaf' },
@@ -124,15 +124,38 @@ describe('buildProgressiveCorpus', () => {
     );
   });
 
+  it('keeps category indexes separate from canonical leaf paths', () => {
+    const markdown = '---\ntitle: Administration\ncategory: Administration\n---\n\nBody.\n';
+    const manifest: ProgressiveCorpusManifest = {
+      schema_version: 2,
+      source_roots: { source: 'https://source.example' },
+      documents: [document('source', 'content/source/administration/index.md', markdown)],
+      assets: [],
+    };
+    const corpus = buildProgressiveCorpus(manifest, () => markdown, {
+      taxonomy: { levels: ['category', 'subcategory'], collapseSingletonSubcategories: true },
+    });
+    expect(getProgressivePaths(corpus.root)).toEqual([
+      { path: 'source', type: 'directory' },
+      { path: 'source/_taxonomy/administration', type: 'directory' },
+      { path: 'source/administration', type: 'leaf' },
+    ]);
+  });
+
   it('normalizes and bounds configured hints deterministically', () => {
     const { corpus } = semanticFixture();
     const site = new URL('https://example.com/corpus/');
-    const category = renderProgressiveNode(corpus, 'source/getting-started', site, new URL('snapshot/', site));
+    const category = renderProgressiveNode(
+      corpus,
+      'source/_taxonomy/getting-started',
+      site,
+      new URL('snapshot/', site),
+    );
     expect(category).toContain('A single leaf subcategory');
     expect(category).not.toContain('Overview');
     const subcategory = renderProgressiveNode(
       corpus,
-      'source/getting-started/installation',
+      'source/_taxonomy/getting-started/installation',
       site,
       new URL('snapshot/', site),
     );
