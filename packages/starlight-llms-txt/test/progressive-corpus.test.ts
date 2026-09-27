@@ -45,7 +45,113 @@ const fixture = () => {
   return { corpus: buildProgressiveCorpus(manifest, (path) => files.get(path) ?? ''), manifest };
 };
 
+const semanticFixture = () => {
+  const files = new Map([
+    [
+      'content/source/install/linux/index.md',
+      '---\ntitle: Linux install\ncategory: Getting Started\nsubcategory: Installation\ndescription: "Install **Linux**. Extra sentence that is not part of the hint."\n---\n\nLinux body.\n',
+    ],
+    [
+      'content/source/install/macos/index.md',
+      '---\ntitle: macOS install\ncategory: Getting Started\nsubcategory: Installation\ndescription: "Install [macOS](https://example.com). More detail."\n---\n\nmacOS body.\n',
+    ],
+    [
+      'content/source/quickstart/index.md',
+      '---\ntitle: Quickstart\ncategory: Getting Started\nsubcategory: Overview\ndescription: "A single leaf subcategory"\n---\n\nQuickstart body.\n',
+    ],
+    [
+      'content/source/reference/index.md',
+      '---\ntitle: API reference\ncategory: API Reference\ndescription: "<strong>One very long description without punctuation that must be shortened at a word boundary instead of leaking the complete frontmatter value into every generated navigation surface</strong>"\n---\n\nReference body.\n',
+    ],
+  ]);
+  const manifest: ProgressiveCorpusManifest = {
+    schema_version: 2,
+    source_roots: { source: 'https://source.example' },
+    documents: [...files].map(([path, markdown]) => document('source', path, markdown)),
+    assets: [],
+  };
+  const options = {
+    taxonomy: {
+      levels: ['category', 'subcategory'] as ['category', 'subcategory'],
+      collapseSingletonSubcategories: true,
+    },
+    hints: { strategy: 'first-sentence' as const, maxCharacters: 72 },
+  };
+  return { corpus: buildProgressiveCorpus(manifest, (path) => files.get(path) ?? '', options), manifest };
+};
+
 describe('buildProgressiveCorpus', () => {
+  it('groups by category and shared subcategory while preserving canonical leaf routes', () => {
+    const { corpus } = semanticFixture();
+    expect(getProgressivePaths(corpus.root)).toEqual([
+      { path: 'source', type: 'directory' },
+      { path: 'source/api-reference', type: 'directory' },
+      { path: 'source/reference', type: 'leaf' },
+      { path: 'source/getting-started', type: 'directory' },
+      { path: 'source/getting-started/installation', type: 'directory' },
+      { path: 'source/install/linux', type: 'leaf' },
+      { path: 'source/install/macos', type: 'leaf' },
+      { path: 'source/quickstart', type: 'leaf' },
+    ]);
+  });
+
+  it('rejects missing categories and semantic route collisions', () => {
+    const missingCategory = '---\ntitle: Page\nsubcategory: One\n---\n\nBody.\n';
+    const manifest: ProgressiveCorpusManifest = {
+      schema_version: 2,
+      source_roots: { source: 'https://source.example' },
+      documents: [document('source', 'content/source/page/index.md', missingCategory)],
+      assets: [],
+    };
+    const taxonomy = {
+      taxonomy: {
+        levels: ['category', 'subcategory'] as ['category', 'subcategory'],
+        collapseSingletonSubcategories: true,
+      },
+    };
+    expect(() => buildProgressiveCorpus(manifest, () => missingCategory, taxonomy)).toThrow(/nonempty category/);
+
+    const collidingFiles = new Map([
+      ['content/source/one/index.md', '---\ntitle: One\ncategory: API & Tools\n---\n\nOne.\n'],
+      ['content/source/two/index.md', '---\ntitle: Two\ncategory: API Tools\n---\n\nTwo.\n'],
+    ]);
+    const collidingManifest = {
+      ...manifest,
+      documents: [...collidingFiles].map(([path, markdown]) => document('source', path, markdown)),
+    };
+    expect(() => buildProgressiveCorpus(collidingManifest, (path) => collidingFiles.get(path) ?? '', taxonomy)).toThrow(
+      /route collision/,
+    );
+  });
+
+  it('normalizes and bounds configured hints deterministically', () => {
+    const { corpus } = semanticFixture();
+    const site = new URL('https://example.com/corpus/');
+    const category = renderProgressiveNode(corpus, 'source/getting-started', site, new URL('snapshot/', site));
+    expect(category).toContain('A single leaf subcategory');
+    expect(category).not.toContain('Overview');
+    const subcategory = renderProgressiveNode(
+      corpus,
+      'source/getting-started/installation',
+      site,
+      new URL('snapshot/', site),
+    );
+    expect(subcategory).toContain('Install Linux.');
+    expect(subcategory).not.toContain('Extra sentence');
+    expect(subcategory).not.toContain('**');
+
+    const leaf = renderProgressiveNode(corpus, 'source/reference', site, new URL('snapshot/', site));
+    const hint =
+      leaf
+        .split('\n')
+        .find((line) => line.startsWith('> '))
+        ?.slice(2) ?? '';
+    expect(hint.length).toBeLessThanOrEqual(72);
+    expect(hint).not.toContain('<strong>');
+    expect(leaf).toContain('Reference body.');
+    expect(renderProgressiveNode(corpus, 'source/reference', site, new URL('snapshot/', site))).toBe(leaf);
+  });
+
   it('constructs a deterministic English-only hierarchy with index collisions', () => {
     const { corpus } = fixture();
     expect(getProgressivePaths(corpus.root)).toEqual([

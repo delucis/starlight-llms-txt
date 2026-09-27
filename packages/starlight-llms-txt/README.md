@@ -20,6 +20,14 @@ starlightLlmsTxt({
     contentRoot: '/corpus',
     assetBaseUrl: '/my-site/snapshot/',
     title: 'F5 Docs Corpus',
+    taxonomy: {
+      levels: ['category', 'subcategory'],
+      collapseSingletonSubcategories: true,
+    },
+    hints: {
+      strategy: 'first-sentence',
+      maxCharacters: 240,
+    },
   },
 })
 ```
@@ -27,6 +35,12 @@ starlightLlmsTxt({
 This mode emits `/llms.txt`, a link-only `/llms-full.txt`, and progressively
 narrower `/_llms-txt/<source>/<path>.txt` routes. It deliberately omits
 `llms-small.txt` and locale routes.
+
+When taxonomy is configured, every document must declare a nonempty `category`.
+Documents are grouped by `category` and then `subcategory`; singleton or missing
+subcategories can link directly from the category while terminal document URLs
+remain derived from their canonical source paths. The first-sentence hint policy
+removes markup, emits one line, and bounds hints without changing document bodies.
 
 See the [configuration docs](https://f5-sales-demo.github.io/starlight-llms-txt/configuration/) for the full option reference.
 

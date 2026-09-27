@@ -33,6 +33,16 @@ export interface ProgressiveSourceMetadata {
   description?: string;
 }
 
+export interface ProgressiveCorpusTaxonomyOptions {
+  levels: ['category', 'subcategory'];
+  collapseSingletonSubcategories?: boolean;
+}
+
+export interface ProgressiveCorpusHintOptions {
+  strategy: 'first-sentence';
+  maxCharacters: number;
+}
+
 export interface ProgressiveCorpusOptions {
   manifest: string;
   contentRoot: string;
@@ -40,11 +50,13 @@ export interface ProgressiveCorpusOptions {
   title?: string;
   description?: string;
   sources?: Record<string, ProgressiveSourceMetadata>;
+  taxonomy?: ProgressiveCorpusTaxonomyOptions;
+  hints?: ProgressiveCorpusHintOptions;
 }
 
 interface ProgressiveEntry {
   id: string;
-  data: { title: string; description?: string };
+  data: { title: string; description?: string; category?: string; subcategory?: string };
   corpus: { sourceId: string; path: string; body: string };
 }
 
@@ -69,6 +81,48 @@ function structuralTitle(value: string): string {
 
 function structuralDescription(title: string): string {
   return `Documentation for ${title}.`;
+}
+
+function taxonomySlug(value: string): string {
+  const slug = value
+    .normalize('NFKD')
+    .toLocaleLowerCase('en-US')
+    .replace(/[’']/g, '')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+    .replace(/^-+|-+$/g, '');
+  if (!slug) throw new Error(`taxonomy value has no usable route segment: ${value}`);
+  return slug;
+}
+
+function plainText(value: string): string {
+  return value
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/[`*_~>#]+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function truncateAtWord(value: string, maxCharacters: number): string {
+  if (value.length <= maxCharacters) return value;
+  const prefix = value.slice(0, Math.max(1, maxCharacters - 1));
+  const boundary = prefix.lastIndexOf(' ');
+  return `${prefix.slice(0, boundary > 0 ? boundary : prefix.length).trimEnd()}…`;
+}
+
+function compactHint(
+  description: string | undefined,
+  title: string,
+  options: ProgressiveCorpusHintOptions | undefined,
+): string | undefined {
+  if (!options) return description?.trim() || undefined;
+  if (options.strategy !== 'first-sentence' || !Number.isInteger(options.maxCharacters) || options.maxCharacters < 1) {
+    throw new Error('progressive corpus hint configuration is invalid');
+  }
+  const text = plainText(description ?? '') || structuralDescription(title);
+  const sentence = text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text;
+  return truncateAtWord(sentence, options.maxCharacters);
 }
 
 function assertSafePath(value: string, label: string): void {
@@ -100,7 +154,11 @@ function routeIdForDocument(document: ProgressiveCorpusDocument): string {
   return slug ? `${document.sourceId}/${slug}` : document.sourceId;
 }
 
-function parseDocument(markdown: string, routeId: string): { title: string; description?: string; body: string } {
+function parseDocument(
+  markdown: string,
+  routeId: string,
+  hints?: ProgressiveCorpusHintOptions,
+): { title: string; description?: string; category?: string; subcategory?: string; body: string } {
   const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) throw new Error(`document has no YAML frontmatter: ${routeId}`);
   const data = parseYaml(match[1] ?? '') as unknown;
@@ -113,16 +171,94 @@ function parseDocument(markdown: string, routeId: string): { title: string; desc
     typeof frontmatter.title === 'string' && frontmatter.title.trim()
       ? frontmatter.title.trim()
       : structuralTitle(fallbackSegment);
-  const description =
+  const rawDescription =
     typeof frontmatter.description === 'string' && frontmatter.description.trim()
       ? frontmatter.description.trim()
       : undefined;
-  return { title, ...(description ? { description } : {}), body: (match[2] ?? '').trim() };
+  const description = compactHint(rawDescription, title, hints);
+  const category = typeof frontmatter.category === 'string' ? frontmatter.category.trim() : '';
+  const subcategory = typeof frontmatter.subcategory === 'string' ? frontmatter.subcategory.trim() : '';
+  return {
+    title,
+    ...(description ? { description } : {}),
+    ...(category ? { category } : {}),
+    ...(subcategory ? { subcategory } : {}),
+    body: (match[2] ?? '').trim(),
+  };
+}
+
+function directory(slug: string, segment: string, title: string): DirectoryNode {
+  return { type: 'directory', slug, segment, meta: { title }, children: new Map() };
+}
+
+function leaf(entry: ProgressiveEntry): LeafNode {
+  return {
+    type: 'leaf',
+    slug: entry.id,
+    segment: entry.id.split('/').at(-1) ?? entry.id,
+    meta: { title: entry.data.title, ...(entry.data.description ? { description: entry.data.description } : {}) },
+    entry,
+  };
+}
+
+function buildTaxonomyTree(entries: ProgressiveEntry[], options: ProgressiveCorpusTaxonomyOptions): DirectoryNode {
+  if (options.levels.length !== 2 || options.levels[0] !== 'category' || options.levels[1] !== 'subcategory') {
+    throw new Error('progressive corpus taxonomy levels must be category then subcategory');
+  }
+  const root = directory('', '', '');
+  const occupiedRoutes = new Set<string>();
+  const reserve = (route: string): void => {
+    if (occupiedRoutes.has(route)) throw new Error(`progressive corpus route collision: ${route}`);
+    occupiedRoutes.add(route);
+  };
+  const bySource = Map.groupBy(entries, (entry) => entry.corpus.sourceId);
+  for (const sourceId of [...bySource.keys()].sort(compareText)) {
+    reserve(sourceId);
+    const source = directory(sourceId, sourceId, structuralTitle(sourceId));
+    root.children.set(sourceId, source);
+    const sourceEntries = bySource.get(sourceId) ?? [];
+    const byCategory = Map.groupBy(sourceEntries, (entry) => {
+      if (!entry.data.category) throw new Error(`document requires a nonempty category: ${entry.id}`);
+      return entry.data.category;
+    });
+    for (const categoryName of [...byCategory.keys()].sort(compareText)) {
+      const categorySegment = taxonomySlug(categoryName);
+      const categoryRoute = `${sourceId}/${categorySegment}`;
+      reserve(categoryRoute);
+      const category = directory(categoryRoute, categorySegment, categoryName);
+      source.children.set(categorySegment, category);
+      const categoryEntries = byCategory.get(categoryName) ?? [];
+      const subcategoryCounts = new Map<string, number>();
+      for (const entry of categoryEntries) {
+        if (entry.data.subcategory) {
+          subcategoryCounts.set(entry.data.subcategory, (subcategoryCounts.get(entry.data.subcategory) ?? 0) + 1);
+        }
+      }
+      const materialized = new Map<string, DirectoryNode>();
+      for (const subcategoryName of [...subcategoryCounts.keys()].sort(compareText)) {
+        const count = subcategoryCounts.get(subcategoryName) ?? 0;
+        if (options.collapseSingletonSubcategories !== false && count < 2) continue;
+        const subcategorySegment = taxonomySlug(subcategoryName);
+        const subcategoryRoute = `${categoryRoute}/${subcategorySegment}`;
+        reserve(subcategoryRoute);
+        const subcategory = directory(subcategoryRoute, subcategorySegment, subcategoryName);
+        category.children.set(`directory:${subcategorySegment}`, subcategory);
+        materialized.set(subcategoryName, subcategory);
+      }
+      for (const entry of [...categoryEntries].sort((a, b) => compareText(a.id, b.id))) {
+        reserve(entry.id);
+        const parent = entry.data.subcategory ? (materialized.get(entry.data.subcategory) ?? category) : category;
+        parent.children.set(`leaf:${entry.id}`, leaf(entry));
+      }
+    }
+  }
+  return root;
 }
 
 export function buildProgressiveCorpus(
   manifest: ProgressiveCorpusManifest,
   readDocument: (path: string) => string,
+  options: Pick<ProgressiveCorpusOptions, 'taxonomy' | 'hints'> = {},
 ): ProgressiveCorpus {
   if (manifest.schema_version !== 2 || !Array.isArray(manifest.documents) || !Array.isArray(manifest.assets)) {
     throw new Error('progressive corpus manifest schema is invalid');
@@ -147,10 +283,15 @@ export function buildProgressiveCorpus(
     if (createHash('sha256').update(markdown).digest('hex') !== document.file_sha256) {
       throw new Error(`document digest mismatch: ${document.path}`);
     }
-    const parsed = parseDocument(markdown, routeId);
+    const parsed = parseDocument(markdown, routeId, options.hints);
     entries.push({
       id: routeId,
-      data: { title: parsed.title, ...(parsed.description ? { description: parsed.description } : {}) },
+      data: {
+        title: parsed.title,
+        ...(parsed.description ? { description: parsed.description } : {}),
+        ...(parsed.category ? { category: parsed.category } : {}),
+        ...(parsed.subcategory ? { subcategory: parsed.subcategory } : {}),
+      },
       corpus: { sourceId: document.sourceId, path: document.path, body: parsed.body },
     });
   }
@@ -170,9 +311,12 @@ export function buildProgressiveCorpus(
     assets.add(asset.path);
   }
 
-  const root = buildTierTree(entries);
+  const root = options.taxonomy ? buildTaxonomyTree(entries, options.taxonomy) : buildTierTree(entries);
   const leaves = getAllTierPaths(root).filter((entry) => entry.type === 'leaf');
-  if (leaves.length !== entries.length) throw new Error('progressive corpus route collision');
+  const routePaths = getAllTierPaths(root).map((entry) => entry.path);
+  if (leaves.length !== entries.length || new Set(routePaths).size !== routePaths.length) {
+    throw new Error('progressive corpus route collision');
+  }
   const sources = [...new Set(entries.map((entry) => entry.corpus.sourceId))].sort(compareText);
   return { root, sources, sourceRoots: { ...manifest.source_roots }, assets };
 }
@@ -181,14 +325,18 @@ export function loadProgressiveCorpus(options: ProgressiveCorpusOptions): Progre
   const manifestPath = path.resolve(options.manifest);
   const contentRoot = path.resolve(options.contentRoot);
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as ProgressiveCorpusManifest;
-  return buildProgressiveCorpus(manifest, (relativePath) => {
-    const absolutePath = path.resolve(contentRoot, relativePath);
-    const relative = path.relative(contentRoot, absolutePath);
-    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-      throw new Error(`document path escapes content root: ${relativePath}`);
-    }
-    return readFileSync(absolutePath, 'utf8');
-  });
+  return buildProgressiveCorpus(
+    manifest,
+    (relativePath) => {
+      const absolutePath = path.resolve(contentRoot, relativePath);
+      const relative = path.relative(contentRoot, absolutePath);
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+        throw new Error(`document path escapes content root: ${relativePath}`);
+      }
+      return readFileSync(absolutePath, 'utf8');
+    },
+    options,
+  );
 }
 
 export function getProgressivePaths(root: DirectoryNode): TierPath[] {
@@ -196,16 +344,14 @@ export function getProgressivePaths(root: DirectoryNode): TierPath[] {
 }
 
 export function findProgressiveNode(root: DirectoryNode, routePath: string): DirectoryNode | LeafNode | undefined {
-  let current: DirectoryNode = root;
-  const segments = routePath.split('/').filter(Boolean);
-  for (let index = 0; index < segments.length; index += 1) {
-    const child = current.children.get(segments[index] ?? '');
-    if (!child) return undefined;
-    if (index === segments.length - 1) return child;
-    if (child.type !== 'directory') return undefined;
-    current = child;
+  const pending: Array<DirectoryNode | LeafNode> = [...root.children.values()];
+  while (pending.length > 0) {
+    const node = pending.shift();
+    if (!node) continue;
+    if (node.slug === routePath) return node;
+    if (node.type === 'directory') pending.push(...node.children.values());
   }
-  return current;
+  return undefined;
 }
 
 function sourceMetadata(
