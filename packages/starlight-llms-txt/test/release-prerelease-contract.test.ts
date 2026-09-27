@@ -29,6 +29,6 @@ describe('Changesets stable release contract', () => {
     ) as { name: string; version: string };
     expect(packageJson.name).toBe(packageName);
     expect(packageJson.version).toMatch(/^2\.\d+\.\d+$/);
-    expect(packageJson.version).toBe('2.1.0');
+    expect(packageJson.version, 'generated stable release version').toBe('2.2.0');
   });
 });

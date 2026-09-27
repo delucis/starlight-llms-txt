@@ -1,5 +1,19 @@
 # starlight-llms-txt
 
+## 2.2.0
+
+### Minor Changes
+
+- [#655](https://github.com/f5-sales-demo/starlight-llms-txt/pull/655) [`3b23db8`](https://github.com/f5-sales-demo/starlight-llms-txt/commit/3b23db86ede9f012e42c9fe23a353fb2c415de6a) Thanks [@robinmordasiewicz](https://github.com/robinmordasiewicz)! - # Add semantic progressive corpus taxonomy
+  
+  Group progressive corpora by category and subcategory with bounded plain-text hints.
+
+### Patch Changes
+
+- [#659](https://github.com/f5-sales-demo/starlight-llms-txt/pull/659) [`626705c`](https://github.com/f5-sales-demo/starlight-llms-txt/commit/626705c976f787d51bb479ea1bd91b1f2e3f9b54) Thanks [@robinmordasiewicz](https://github.com/robinmordasiewicz)! - # Reserve semantic taxonomy routes
+  
+  Keep taxonomy indices in a reserved namespace so canonical corpus leaf URLs cannot shadow them.
+
 ## 2.1.0
 
 ### Minor Changes
