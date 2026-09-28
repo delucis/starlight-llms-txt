@@ -95,6 +95,16 @@
       "docker_socket": false,
       "repositories": ["f5-sales-demo/terraform-provider-xcsh"]
     },
+    "terraform-provider-xcsh-32vcpu-candidate": {
+      "label": "terraform-provider-xcsh-32vcpu-candidate",
+      "runner_profile": "compute-32-vcpu-density-candidate",
+      "image": "ghcr.io/f5-sales-demo/self-hosted-runner@sha256:37844f6be57177fa574ce96e9241499663c5194453e2477f0ce0ea8225094e7c",
+      "vm_size": "c6a.8xlarge",
+      "cpu_limit": 30,
+      "memory_limit_bytes": 60129542144,
+      "docker_socket": false,
+      "repositories": ["f5-sales-demo/terraform-provider-xcsh"]
+    },
     "xcsh-compute-16-vcpu-candidate": {
       "label": "xcsh-compute-16-vcpu-candidate",
       "runner_profile": "compute-16-vcpu-candidate",
@@ -120,8 +130,65 @@
     "terraform-provider-xcsh-compute": [
       {
         "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_build-test.yml",
+        "job": "build"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_build-test.yml",
+        "job": "vet"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_build-test.yml",
+        "job": "race"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_build-test.yml",
+        "job": "lint"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_generate-docs.yml",
+        "job": "generate"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_generate-provider.yml",
+        "job": "generate"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_tag-release.yml",
+        "job": "preflight"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/_tag-release.yml",
+        "job": "publish"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/ci.yml",
+        "job": "validate-docs-generation"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/ci.yml",
+        "job": "validate-mock-fixtures"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/on-merge.yml",
+        "job": "publish-regeneration"
+      }
+    ],
+    "terraform-provider-xcsh-32vcpu-candidate": [
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
         "workflow": ".github/workflows/workload-benchmark.yml",
-        "job": "benchmark-d16"
+        "job": "eks-candidate"
       }
     ],
     "xcsh-compute-16-vcpu-candidate": [
@@ -165,6 +232,30 @@
         "check-linked-issues": {
           "runs_on": "ubuntu-latest",
           "reason": "read-only AWS and KVM release-chain pull request policy"
+        }
+      },
+      ".github/workflows/workflow-security-audit.yml": {
+        "workflow-security-audit": {
+          "runs_on": "ubuntu-latest",
+          "reason": "read-only pull request workflow security audit"
+        }
+      }
+    },
+    "f5-sales-demo/html-to-markdown": {
+      ".github/workflows/ci.yml": {
+        "quality": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "portable Python validation uses isolated hosted tooling"
+        },
+        "workflow-lint": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "workflow lint is credential-free"
+        }
+      },
+      ".github/workflows/release-content.yml": {
+        "snapshot": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "public-source browser crawl and release packaging use isolated hosted tooling"
         }
       },
       ".github/workflows/workflow-security-audit.yml": {
@@ -500,7 +591,7 @@
         }
       }
     },
-    "f5-sales-demo/docs": {
+    "f5-sales-demo/f5-sales-demo.github.io": {
       ".github/workflows/workflow-security-audit.yml": {
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
@@ -725,18 +816,10 @@
           "reason": "read-only provider generation uses the hosted Go toolchain"
         }
       },
-      ".github/workflows/_tag-release.yml": {
-        "preflight": {
+      ".github/workflows/workload-benchmark.yml": {
+        "hosted-serial": {
           "runs_on": "ubuntu-latest",
-          "reason": "release reproducibility verification uses isolated hosted tooling"
-        },
-        "publish": {
-          "runs_on": "ubuntu-latest",
-          "reason": "release signing and publication use isolated hosted execution"
-        },
-        "tag": {
-          "runs_on": "ubuntu-latest",
-          "reason": "release tag signing uses isolated hosted execution"
+          "reason": "matched hosted serial performance baseline"
         }
       },
       ".github/workflows/workflow-security-audit.yml": {
@@ -976,7 +1059,7 @@
         }
       }
     },
-    "f5-sales-demo/docs": {
+    "f5-sales-demo/f5-sales-demo.github.io": {
       "runner": {
         "arc_scale_sets": {
           "socketless": { "label": "docs-socketless", "profile": "ubuntu-24.04" },
@@ -1019,6 +1102,20 @@
         "arc_scale_sets": {
           "socketless": { "label": "docs-socketless", "profile": "ubuntu-24.04" },
           "container-build": { "label": "docs-container-build", "profile": "container-build" }
+        }
+      }
+    },
+    "f5-sales-demo/html-to-markdown": {
+      "runner": {
+        "arc_scale_sets": {
+          "socketless": {
+            "label": "managed-socketless",
+            "profile": "ubuntu-24.04"
+          },
+          "container-build": {
+            "label": "managed-container-build",
+            "profile": "container-build"
+          }
         }
       }
     },
@@ -1274,6 +1371,10 @@
           "compute": {
             "label": "terraform-provider-xcsh-compute",
             "attestation": "terraform-provider-xcsh-d16"
+          },
+          "compute-32-vcpu-density-candidate": {
+            "label": "terraform-provider-xcsh-32vcpu-candidate",
+            "attestation": "terraform-provider-xcsh-32vcpu-candidate"
           }
         }
       },

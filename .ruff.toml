@@ -115,6 +115,13 @@ ignore = [
     "PT009",
     "PT027",
 ]
+"tests/test_verify_snapshot.py" = [
+    "EM101",
+    "INP001",
+    "PT009",
+    "PT027",
+    "TRY003",
+]
 
 [lint.isort]
 split-on-trailing-comma = true

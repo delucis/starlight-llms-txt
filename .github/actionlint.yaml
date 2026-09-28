@@ -20,14 +20,15 @@ self-hosted-runner:
     - demo-resources
     - devcontainer
     - dns
-    - docs
     - docs-builder
     - docs-container-build
     - docs-control
     - docs-icons
     - docs-socketless
     - docs-theme
+    - f5-sales-demo.github.io
     - fixture
+    - html-to-markdown
     - i18n-core
     - macos-15-intel
     - managed-container-build
@@ -41,6 +42,7 @@ self-hosted-runner:
     - starlight-llms-txt
     - starlight-mega-menu
     - terraform-provider-xcsh
+    - terraform-provider-xcsh-32vcpu-candidate
     - terraform-provider-xcsh-compute
     - traffic-generator
     - ubuntu-24.04-arm

@@ -83,6 +83,7 @@ SOURCE_CODE_SUFFIXES = {
     ".py",
     ".rb",
     ".rs",
+    ".source",
     ".swift",
     ".tf",
     ".ts",
@@ -115,7 +116,7 @@ SOURCE_FENCE_LANGUAGES = {
 }
 
 EMAIL_RE = re.compile(
-    r"(?<![-A-Za-z0-9._%+/])"
+    r"(?<![-A-Za-z0-9._%+/@])"
     r"[A-Za-z0-9][-A-Za-z0-9.!#$%&'*+=?^_`{|}~]*[A-Za-z0-9]@"
     r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
     r"[A-Za-z]{2,63}"

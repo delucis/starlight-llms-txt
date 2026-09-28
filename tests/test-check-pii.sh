@@ -299,6 +299,23 @@ git -C "$repo" add fixture.ts
 git -C "$repo" commit -qm numeric-identifier-assignment
 assert_customer_identifier "numeric identifiers outside enum scope remain enforced" "$repo" --scope head --mode enforce
 
+repo=$(new_repo source-code-fixture)
+cat >"${repo}/protocol.source" <<'EOF'
+pub struct DynamicToolCallParams {
+    pub namespace: Option<String>,
+    pub project_id: Option<String>,
+}
+EOF
+git -C "$repo" add protocol.source
+git -C "$repo" commit -qm source-code-fixture
+assert_clean "typed declarations in source-code fixtures are not customer identifiers" "$repo" --scope head --mode enforce
+
+repo=$(new_repo source-code-fixture-literal)
+printf 'const namespace = "private-customer";\n' >"${repo}/protocol.source"
+git -C "$repo" add protocol.source
+git -C "$repo" commit -qm source-code-fixture-literal
+assert_customer_identifier "literal identities in source-code fixtures remain enforced" "$repo" --scope head --mode enforce
+
 repo=$(new_repo string-shaped-enum-declaration)
 cat >"${repo}/fixture.ts" <<'EOF'
 const source = "enum ResourceKind {";
@@ -2014,6 +2031,22 @@ EOF
 git -C "$repo" add fixture.txt
 git -C "$repo" commit -qm syntax
 assert_clean "URI, package, and anchor syntax are not contact emails" "$repo" --scope head --mode enforce
+
+repo=$(new_repo scoped-npm-coordinate)
+cat >"${repo}/package.json" <<'EOF'
+{
+  "patchedDependencies": {
+    "@tobilu/qmd@2.8.3": "patches/@tobilu%2Fqmd@2.8.3.patch"
+  }
+}
+EOF
+cat >"${repo}/bun.lock" <<'EOF'
+"patchedDependencies": {
+  "@tobilu/qmd@2.8.3": "patches/@tobilu%2Fqmd@2.8.3.patch",
+}
+EOF
+git -C "$repo" add package.json bun.lock
+assert_clean "staged scoped npm package coordinates are not contact emails" "$repo" --scope staged --mode enforce
 
 repo=$(new_repo email)
 printf 'email: person@customer.local\n' >"${repo}/fixture.yaml"
