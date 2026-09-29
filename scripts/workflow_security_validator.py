@@ -125,7 +125,7 @@ PROVIDER_BENCHMARK_WORKFLOW = ".github/workflows/workload-benchmark.yml"
 PROVIDER_CANDIDATE_LABEL = "terraform-provider-xcsh-32vcpu-candidate"
 PROVIDER_MANUAL_COMPUTE_ROUTE_EXPRESSION = "${{ needs.validate.outputs.runner_label }}"
 PROVIDER_MANUAL_COMPUTE_ROUTE_LABELS = {
-    "eks-candidate": frozenset({PROVIDER_CANDIDATE_LABEL}),
+    "eks-candidate": frozenset({"terraform-provider-xcsh-compute"}),
 }
 # fmt: off
 PROVIDER_CANDIDATE_GRANT_IDENTITIES = frozenset(

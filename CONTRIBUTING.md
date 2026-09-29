@@ -354,18 +354,23 @@ apply what fits.
 
 ### PII minimization and repository sweeps
 
-Real personally identifiable information (PII) does not belong in this fleet. This covers tracked
-content and runtime handling: source, fixtures, snapshots, generated files, logs, telemetry, error
-messages, media and its metadata, filenames, and commit messages. `STYLE_GUIDE.md` defines the
-identifiers, synthetic replacements, and narrow legal, upstream, and source-control provenance
-exceptions.
+Real personally identifiable information (PII) must not enter Git, public documentation, examples, fixtures,
+issues, pull requests, logs, telemetry, error messages, media and its metadata, filenames, commit
+messages, or other published evidence. `STYLE_GUIDE.md` defines synthetic replacements and the
+narrow legal, upstream, and source-control provenance exceptions. Never publish credentials or
+customer data.
 
-Minimize runtime identity at the interface, not after storage. Delete nonessential name, email,
-avatar, address, and similar fields from schemas, APIs, clients, and callers. Authentication may use
-only an opaque provider subject for the authorization decision; never log it or persist it unless an
-engineering design establishes that persistence is indispensable and defines access and deletion.
-Because the fleet is prerelease, remove and replace PII-bearing interfaces in one change. Do not add
-aliases, dual-read logic, deprecated fields, migrations, or compatibility shims.
+Private local drafts and installed-tool outputs may contain authorized real customer data when the
+workflow requires it, including names, contact details, account names, customer relationship
+management identifiers, correspondence, and source-system data in model context and user-selected
+local files. Authorization from the organization or source system is the workflow's authority; do
+not invent a second activation gate. This permission does not extend to unauthorized targets,
+sources, or access, and it does not permit copying private values into repository or public
+artifacts.
+
+Minimize identity that a workflow does not need. Demo and test workflows remain synthetic. Keep
+private runtime data within the access controls and retention practices chosen by the authorized
+operator and organization. Do not log it or send it to telemetry.
 
 Use this sequence for a PII sweep:
 

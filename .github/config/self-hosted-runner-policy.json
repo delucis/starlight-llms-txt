@@ -160,6 +160,11 @@
       },
       {
         "repository": "f5-sales-demo/terraform-provider-xcsh",
+        "workflow": ".github/workflows/workload-benchmark.yml",
+        "job": "eks-candidate"
+      },
+      {
+        "repository": "f5-sales-demo/terraform-provider-xcsh",
         "workflow": ".github/workflows/_tag-release.yml",
         "job": "preflight"
       },
@@ -362,6 +367,12 @@
       }
     },
     "f5-sales-demo/xcsh": {
+      ".github/workflows/zig-cache-prime.yml": {
+        "prime": {
+          "runs_on": "matrix",
+          "reason": "native-platform Zig verification and main-branch archive cache priming require macOS and Windows runners"
+        }
+      },
       ".github/workflows/api-spec-update.yml": {
         "update-api-specs": {
           "runs_on": "ubuntu-22.04",
@@ -388,6 +399,22 @@
         "verify-homebrew-install": {
           "runs_on": "matrix",
           "reason": "Homebrew cask release verification requires Apple silicon and Intel macOS"
+        },
+        "create-release": {
+          "runs_on": "macos-14",
+          "reason": "immutable release assembly verifies signed Apple assets on native macOS"
+        },
+        "update-homebrew": {
+          "runs_on": "macos-14",
+          "reason": "Homebrew cask publication verifies signed Apple release assets on macOS"
+        },
+        "verify-macos-pkg": {
+          "runs_on": "matrix",
+          "reason": "direct MDM package release verification requires Intel and Apple silicon macOS"
+        },
+        "verify-standalone-install": {
+          "runs_on": "matrix",
+          "reason": "standalone release installer verification requires native Linux macOS and Windows"
         }
       },
       ".github/workflows/release-homebrew-backfill.yml": {
@@ -442,12 +469,6 @@
           "reason": "release reconciliation uses hosted registry access"
         }
       },
-      ".github/workflows/test-codesign.yml": {
-        "test-codesign": {
-          "runs_on": "matrix",
-          "reason": "Apple code signing requires native macOS"
-        }
-      },
       ".github/workflows/windows-containment-uat.yml": {
         "native-two-volume": {
           "runs_on": "windows-latest",
@@ -458,6 +479,30 @@
         "workflow-security-audit": {
           "runs_on": "ubuntu-latest",
           "reason": "read-only pull request workflow security audit"
+        }
+      },
+      ".github/workflows/container.yml": {
+        "publish-ghcr-arm64": {
+          "runs_on": "ubuntu-24.04-arm",
+          "reason": "native ARM64 container publication requires a hosted ARM64 Docker environment"
+        }
+      },
+      ".github/workflows/dependency-cache-prime.yml": {
+        "prime-hosted-bun": {
+          "runs_on": "ubuntu-24.04",
+          "reason": "hosted Bun dependency caches must be primed in the GitHub-hosted runner environment"
+        }
+      },
+      ".github/workflows/release-github-backfill.yml": {
+        "backfill": {
+          "runs_on": "macos-14",
+          "reason": "immutable GitHub release recovery verifies signed Apple assets on native macOS"
+        }
+      },
+      ".github/workflows/spoofed-version-drift.yml": {
+        "check": {
+          "runs_on": "ubuntu-22.04",
+          "reason": "credential-free upstream client version drift checks use isolated hosted tooling"
         }
       }
     },
@@ -792,28 +837,6 @@
         "check-linked-issues": {
           "runs_on": "ubuntu-latest",
           "reason": "read-only AWS and KVM release-chain pull request policy"
-        }
-      },
-      ".github/workflows/_build-test.yml": {
-        "build": {
-          "runs_on": "ubuntu-latest",
-          "reason": "CGO race tests require the hosted compiler toolchain"
-        },
-        "lint": {
-          "runs_on": "ubuntu-latest",
-          "reason": "repository Go lint uses the hosted toolchain"
-        }
-      },
-      ".github/workflows/_generate-docs.yml": {
-        "generate": {
-          "runs_on": "ubuntu-latest",
-          "reason": "read-only documentation generation uses hosted Terraform tooling"
-        }
-      },
-      ".github/workflows/_generate-provider.yml": {
-        "generate": {
-          "runs_on": "ubuntu-latest",
-          "reason": "read-only provider generation uses the hosted Go toolchain"
         }
       },
       ".github/workflows/workload-benchmark.yml": {

@@ -991,6 +991,41 @@ def numeric_enum_member(
     return bool(re.match(r"\s*(?:,|})", context.source_structure[value_end:]))
 
 
+def source_field_alias(
+    match: re.Match[str],
+    value: str,
+    context: LineScanContext,
+) -> bool:
+    """Recognize exact schema field names in active source object properties.
+
+    This does not make field-name strings safe in serialized data, comments or
+    strings containing source. The masked structure must retain the property
+    key and colon inside braces, with no expression following the quoted token.
+    """
+    if not context.source_code or match.group("separator") != ":":
+        return False
+    if match.group("quote") not in {"'", '"'}:
+        return False
+    key = match.group("key")
+    aliases = {
+        "first_name": "given_name",
+        "given_name": "first_name",
+        "last_name": "family_name",
+        "family_name": "last_name",
+    }
+    if value not in {key, aliases.get(key)}:
+        return False
+    structure = context.source_structure
+    if structure[match.start("key") : match.end("key")] != key:
+        return False
+    prefix = structure[: match.start("key")]
+    depth = context.source_brace_depth + prefix.count("{") - prefix.count("}")
+    if depth <= 0:
+        return False
+    value_end = match.start("value") + len(value) + 1
+    return bool(re.match(r"\s*(?:[,;}]|$)", structure[value_end:]))
+
+
 def is_vscode_view_item_context_tag(
     path: str,
     line: str,
@@ -2004,6 +2039,8 @@ def has_literal_structured_value(
     """Return whether a structured value is scalar data rather than source syntax."""
     if not is_json_structured_literal(path, line, match):
         return False
+    if source_field_alias(match, value, context):
+        return False
     return not is_nonliteral_code_expression(
         line,
         match,
@@ -2043,7 +2080,8 @@ def scan_contacts(
             value = structured_field_value(path, line, match)
             if not is_json_structured_literal(path, line, match):
                 continue
-            if NUMERIC_LITERAL_RE.fullmatch(value):
+            numeric_name = NUMERIC_LITERAL_RE.fullmatch(value)
+            if numeric_name or source_field_alias(match, value, context):
                 continue
             if is_nonliteral_code_expression(
                 line,
@@ -2108,6 +2146,8 @@ def scan_structured_identity(
             continue
         value = structured_field_value(path, line, match)
         if numeric_enum_member(match, value, context):
+            continue
+        if source_field_alias(match, value, context):
             continue
         in_jq_span = match_is_in_spans(match, context.jq_spans)
         jq_literal = in_jq_span and not jq_value_is_expression(

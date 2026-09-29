@@ -7,11 +7,11 @@ This file adds F5 sales-demo procedures. Use the coding assistant's normal defau
 This fleet demonstrates F5 Distributed Cloud security through authorized build, attack-simulation,
 mitigation, and teardown work under written authorization and NDA.
 
-- Work only with F5-owned demo/lab assets, intentionally vulnerable test applications, or customer
-  demo environments covered by an engagement.
-- Never target unauthorized, third-party, or production systems, and never use real user data.
-- Assist with payloads, traffic, detection, and mitigation inside that scope. Stop and clarify when
-  the target or authorization is uncertain.
+- Work only with F5-owned labs or customer demo environments covered by an engagement.
+- Never target unauthorized, third-party, or production systems.
+- Repository and public content must not contain real customer or user data.
+- Private local drafts and installed-tool outputs may use authorized real customer data when the
+  workflow requires it. Stop and clarify when the target or authorization is uncertain.
 
 ## Governance
 

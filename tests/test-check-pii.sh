@@ -280,6 +280,54 @@ git -C "$repo" add fixture.json
 git -C "$repo" commit -qm vscode-simple-snippet-literal-default
 assert_customer_identifier "direct VS Code snippet defaults remain enforced" "$repo" --scope head --mode enforce
 
+repo=$(new_repo source-field-aliases)
+cat >"${repo}/aliases.ts" <<'EOF'
+const aliases = { first_name: "first_name" };
+type NameField = { first_name: "given_name" };
+type IdentityField = { account: "account" };
+const multiline = {
+  first_name: "given_name",
+  account: "account",
+};
+EOF
+cat >"${repo}/README.md" <<'EOF'
+# Source field aliases
+
+```typescript
+const aliases = { first_name: "first_name" };
+type NameField = { first_name: "given_name" };
+type IdentityField = { account: "account" };
+```
+EOF
+git -C "$repo" add -A
+git -C "$repo" commit -qm source-field-aliases
+assert_clean "source field aliases are schema names rather than personal values" "$repo" --scope head --mode enforce
+
+repo=$(new_repo source-field-alias-boundary)
+cat >"${repo}/fixture.ts" <<'EOF'
+const record = { first_name: "Private Person", account: "private-customer" };
+// first_name: "given_name"
+/* account: "account" */
+const serialized = '{ first_name: "given_name", account: "account" }';
+const prefixed = { first_name: "given_name-person", account: "account-customer" };
+EOF
+cat >"${repo}/generated.json" <<'EOF'
+{"first_name": "given_name", "account": "account"}
+EOF
+git -C "$repo" add -A
+git -C "$repo" commit -qm source-field-alias-boundary
+assert_violation "comments, serialized records and identity fixtures remain enforced" "$repo" --scope head --mode enforce
+if ! python3 - "${WORK}/stdout" <<'PYTEST'; then
+import sys
+from pathlib import Path
+output = Path(sys.argv[1]).read_text()
+assert all(f"fixture.ts:{line}" in output for line in range(1, 6)), output
+assert "generated.json:1" in output, output
+PYTEST
+  echo "[FAIL] each non-structural field remains enforced"
+  FAIL=1
+fi
+
 repo=$(new_repo numeric-enum-members)
 cat >"${repo}/fixture.ts" <<'EOF'
 export enum ResourceKind

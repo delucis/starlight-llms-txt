@@ -70,7 +70,7 @@
       ".github/workflows/super-linter.yml",
       ".github/workflows/semgrep.yml"
     ],
-    "console": [".ruff.toml", ".mypy.ini", ".isort.cfg"],
+    "console": [".mypy.ini", ".isort.cfg"],
     "xcsh-chrome-extension": [".ruff.toml", ".python-lint", ".mypy.ini", ".isort.cfg"],
     "apt-repo": ["README.md"],
     "demo-resource-template": ["README.md"],
