@@ -690,6 +690,19 @@ def canonical_route_label(value, repository):
     return value
 
 
+def scoped_route_label(repository, relative, job_id, value):
+    """Resolve the exact fork-isolated provider shell job and no other context."""
+    expression = "${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-latest' || 'managed-socketless' }}"
+    if (
+        repository == PROVIDER_REPOSITORY
+        and relative == ".github/workflows/ci.yml"
+        and job_id == "validate-shell-scripts"
+        and value == expression
+    ):
+        return "managed-socketless"
+    return value
+
+
 def trusted_dynamic_route_labels(repository, relative, job_id, runs_on, workflow):
     """Resolve exact manual benchmark route expressions in their job context."""
     triggers = workflow_on(workflow)
@@ -1164,7 +1177,7 @@ def inventory(root, repository, policy, default_profile, routes):
                 raise PolicyError(f"malformed job {relative}/{job_id}")
             if "uses" in job:
                 validate_reusable_runner_inputs(job, routes, default_profile, repository)  # fmt: skip
-            runs_on = job.get("runs-on")
+            runs_on = scoped_route_label(repository, relative, job_id, job.get("runs-on"))  # fmt: skip
             identity = (repository, relative, job_id)
             dynamic_route_labels = trusted_dynamic_route_labels(
                 repository,
