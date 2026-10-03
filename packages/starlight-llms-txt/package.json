@@ -6,13 +6,15 @@
   "author": "f5-sales-demo (fork of delucis/starlight-llms-txt)",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.ts",
+    "./canonical-corpus": "./canonical-corpus.mjs"
   },
   "files": [
     "*.ts",
     "!*.test.ts",
     "!vitest.config.ts",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "canonical-corpus.mjs"
   ],
   "dependencies": {
     "@astrojs/mdx": "^7.0.8",
@@ -35,7 +37,7 @@
     "vitest": "^4.1.11"
   },
   "scripts": {
-    "test": "vitest run",
+    "test": "node --test test/canonical-corpus.test.mjs && vitest run",
     "test:watch": "vitest"
   },
   "peerDependencies": {
