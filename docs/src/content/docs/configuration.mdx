@@ -311,3 +311,21 @@ The separator used when concatenating page entries together.
 ```ts
 pageSeparator: '\n----------\n',
 ```
+
+### `i18n`
+
+**Type:** `boolean`  
+**Default:** `false`
+
+By default, the plugin only generates files for your default language on [multilingual sites](https://starlight.astro.build/guides/i18n/).
+Set `i18n` to `true` to also generate them for each of your other [locales](https://starlight.astro.build/reference/configuration/#locales):
+
+```ts
+i18n: true,
+```
+
+Each locale’s files are generated under that locale’s directory, for example `/fr/llms.txt`, `/fr/llms-full.txt`, `/fr/llms-small.txt`, and any [`customSets`](#customsets) in `/fr/_llms-txt/`.
+They include only the pages that exist in that locale, while the files at the root of your site keep using your default language.
+
+Page slugs and glob patterns in the [`customSets`](#customsets), [`promote`](#promote), [`demote`](#demote), and [`exclude`](#exclude) options are matched against the slug of the equivalent page in your default language.
+For example, `exclude: ['old-page']` also excludes `fr/old-page` from `/fr/llms-small.txt`.
