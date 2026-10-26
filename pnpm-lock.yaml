@@ -1836,8 +1836,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@8.11.2:
-    resolution: {integrity: sha512-u4UB2/IrKdU6lFxumHmmo1a3fCQO5tzQllRorfoRS63txhrB7xTpSn1PftwC4qEHkOaqP95fCWW4lJzwErwzhQ==}
+  undici@8.12.3:
+    resolution: {integrity: sha512-+fdndUTwBP86cVjihTp21hZHo7d6oj1c/47XPA3lL8mM0XHs+C4EkcjmgRsFnFk2f/UONGDy9ItBItmXsLOQHw==}
     engines: {node: '>=22.19.0'}
 
   unified@11.0.5:
@@ -4050,7 +4050,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@8.11.2: {}
+  undici@8.12.3: {}
 
   unified@11.0.5:
     dependencies:
@@ -4066,7 +4066,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
       ohash: 2.0.11
-      undici: 8.11.2
+      undici: 8.12.3
 
   unist-util-find-after@5.0.0:
     dependencies:
