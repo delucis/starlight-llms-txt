@@ -257,4 +257,16 @@ export interface StarlightLllmsTextOptions {
 				/** Selectors applied to every generated output (merged with `small` and `full`). */
 				all?: string[];
 		  };
+
+	/**
+	 * Generate an additional set of files for each non-default locale of a multilingual site,
+	 * e.g. `/fr/llms.txt`, `/fr/llms-full.txt`, and `/fr/llms-small.txt`.
+	 *
+	 * The files at the root of the site always contain the default locale’s content.
+	 * Patterns in options like `customSets`, `promote`, `demote`, and `exclude` are matched against
+	 * the slug of the equivalent page in the default locale.
+	 *
+	 * @default false
+	 */
+	i18n?: boolean;
 }
