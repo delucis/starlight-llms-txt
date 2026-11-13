@@ -141,6 +141,25 @@ const htmlToMarkdownPipeline = unified()
 			}
 		};
 	})
+	.use(function improveMermaidHandling() {
+		return (tree) => {
+			// Client-side Mermaid integrations (e.g. `astro-mermaid`) render a ```mermaid fence as
+			// `<pre class="mermaid">` with no `<code>` child, so `hast-util-to-mdast` cannot find its
+			// language. Wrap the diagram source in a `<code class="language-mermaid">` element.
+			const diagrams = selectAll('pre.mermaid', tree as Parameters<typeof selectAll>[1]);
+			for (const pre of diagrams) {
+				if (select('code', pre)) continue;
+				pre.children = [
+					{
+						type: 'element',
+						tagName: 'code',
+						properties: { className: ['language-mermaid'] },
+						children: pre.children,
+					},
+				];
+			}
+		};
+	})
 	.use(function improveTabsHandling() {
 		return (tree) => {
 			const tabInstances = selectAll('starlight-tabs', tree as Parameters<typeof selectAll>[1]);
