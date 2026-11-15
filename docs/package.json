@@ -13,8 +13,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.42.7",
-    "astro": "^7.4.4",
+    "@astrojs/starlight": "^0.42.10",
+    "astro": "^7.4.10",
     "sharp": "^0.35.5",
     "starlight-llms-txt": "workspace:*",
     "starlight-package-managers": "^0.13.0"
