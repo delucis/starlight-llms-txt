@@ -18,7 +18,7 @@ importers:
   docs:
     dependencies:
       '@astrojs/starlight':
-        specifier: ^0.42.10
+        specifier: ^0.42.11
         version: 0.42.11(astro@7.4.12(@types/node@24.10.1)(esbuild@0.28.1)(yaml@2.9.1))(supports-color@7.2.0)
       astro:
         specifier: ^7.4.11
@@ -73,7 +73,7 @@ importers:
         version: 4.0.0
     devDependencies:
       '@astrojs/starlight':
-        specifier: ^0.42.10
+        specifier: ^0.42.11
         version: 0.42.11(astro@7.4.12(@types/node@24.10.1)(esbuild@0.28.1)(yaml@2.9.1))(supports-color@7.2.0)
       astro:
         specifier: ^7.4.11
