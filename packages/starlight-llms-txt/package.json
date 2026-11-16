@@ -9,7 +9,7 @@
 		".": "./index.ts"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "^8.1.4",
+		"@astrojs/mdx": "^8.1.5",
 		"@types/hast": "^3.0.5",
 		"@types/micromatch": "^4.0.10",
 		"github-slugger": "^2.0.0",
@@ -24,7 +24,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/starlight": "^0.42.10",
-		"astro": "^7.4.10"
+		"astro": "^7.4.11"
 	},
 	"peerDependencies": {
 		"@astrojs/starlight": ">=0.41.0",
