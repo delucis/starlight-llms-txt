@@ -38,6 +38,29 @@ export default function starlightLlmsTxt(opts: StarlightLllmsTextOptions = {}): 
 								pattern: '/_llms-txt/[slug].txt',
 								prerender: true,
 							});
+							if (opts.i18n) {
+								// Generate the same files for each non-default locale, e.g. `/fr/llms.txt`.
+								injectRoute({
+									entrypoint: new URL('./llms.txt.ts', import.meta.url),
+									pattern: '/[locale]/llms.txt',
+									prerender: true,
+								});
+								injectRoute({
+									entrypoint: new URL('./llms-full.txt.ts', import.meta.url),
+									pattern: '/[locale]/llms-full.txt',
+									prerender: true,
+								});
+								injectRoute({
+									entrypoint: new URL('./llms-small.txt.ts', import.meta.url),
+									pattern: '/[locale]/llms-small.txt',
+									prerender: true,
+								});
+								injectRoute({
+									entrypoint: new URL('./llms-custom.txt.ts', import.meta.url),
+									pattern: '/[locale]/_llms-txt/[slug].txt',
+									prerender: true,
+								});
+							}
 
 							const slugger = new GithubSlugger();
 							const projectContext: ProjectContext = {
