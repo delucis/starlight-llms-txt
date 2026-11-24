@@ -117,24 +117,22 @@ const htmlToMarkdownPipeline = unified()
 				if (pre?.properties.dataLanguage && code) {
 					if (!Array.isArray(code.properties.className)) code.properties.className = [];
 
-					const diffLines =
-						pre.properties.dataLanguage === 'diff'
-							? []
-							: code.children.filter((child) => matches('div.ec-line.ins, div.ec-line.del', child));
+					// Expressive Code turns `+`/`-` diff markers (from `diff` code blocks or from
+					// `ins`/`del` meta) into `.ins`/`.del` line classes and strips the marker
+					// characters, so we add them back to output valid diff syntax.
+					const diffLines = code.children.filter((child) =>
+						matches('div.ec-line.ins, div.ec-line.del', child),
+					);
 					if (diffLines.length === 0) {
 						code.properties.className.push(`language-${pre.properties.dataLanguage}`);
 					} else {
 						code.properties.className.push('language-diff');
 						for (const line of diffLines) {
 							if (line.type !== 'element') continue;
-							const classes = line.properties?.className;
-							if (typeof classes !== 'string' && !Array.isArray(classes)) continue;
-							const marker = classes.includes('ins') ? '+' : '-';
-							const span = select('span:not(.indent)', line);
-							const firstChild = span?.children[0];
-							if (firstChild?.type === 'text') {
-								firstChild.value = `${marker}${firstChild.value}`;
-							}
+							const marker = matches('.ins', line) ? '+' : '-';
+							// Insert the marker at the very start of the line, before any indentation.
+							const lineCode = select('.code', line) ?? line;
+							lineCode.children.unshift({ type: 'text', value: marker });
 						}
 					}
 				}
@@ -190,6 +188,15 @@ const htmlToMarkdownPipeline = unified()
 					return matches('.sr-only', node);
 				});
 			}
+		};
+	})
+	.use(function removeHeadingAnchorLinks() {
+		return (tree) => {
+			// Remove Starlight’s “Section titled …” anchor links rendered next to headings.
+			remove(tree, (_node) => {
+				const node = _node as RootContent;
+				return matches('.sl-anchor-link', node);
+			});
 		};
 	})
 	.use(function removeHtmlComments() {
