@@ -6,15 +6,21 @@ import type {
 } from 'astro';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { generateLlmsTxt } from './generator';
+import { localeKeys } from './utils';
 
 // Explicitly set this to prerender so it works the same way for sites in `server` mode.
 export const prerender = true;
 
-export const getStaticPaths = (() => {
-	return starlightLllmsTxtContext.customSets.map(({ label, description, paths, slug }) => ({
-		params: { slug },
-		props: { label, description, paths },
-	}));
+export const getStaticPaths = (({ routePattern }) => {
+	// The localized `/[locale]/_llms-txt/[slug].txt` route added by the `i18n` option generates
+	// every custom set for each locale.
+	const locales = routePattern.includes('[locale]') ? localeKeys : [undefined];
+	return locales.flatMap((locale) =>
+		starlightLllmsTxtContext.customSets.map(({ label, description, paths, slug }) => ({
+			params: { locale, slug },
+			props: { label, description, paths },
+		}))
+	);
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

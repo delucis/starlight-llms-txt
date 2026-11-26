@@ -1,9 +1,9 @@
 import type { APIContext } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import micromatch from 'micromatch';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
 import { entryToSimpleMarkdown } from './entryToSimpleMarkdown';
-import { defaultLang, isDefaultLocale } from './utils';
+import { defaultLang, isDefaultLocale, isInLocale, toDefaultLocaleId } from './utils';
 
 /** Collator to compare two strings in the default language. */
 const collator = new Intl.Collator(defaultLang);
@@ -27,12 +27,20 @@ export async function generateLlmsTxt(
 		include?: string[] | undefined;
 	}
 ): Promise<string> {
-	let docs = await getCollection('docs', (doc) => isDefaultLocale(doc) && !doc.data.draft);
+	// Set by the localized routes added by the `i18n` option, e.g. `fr` for `/fr/llms-full.txt`.
+	const { locale } = context.params;
+	let docs = await getCollection(
+		'docs',
+		(doc) => (locale ? isInLocale(doc, locale) : isDefaultLocale(doc)) && !doc.data.draft
+	);
+	/** Get the ID to match against page patterns. Localized pages use their default-locale ID. */
+	const getId = (doc: CollectionEntry<'docs'>) =>
+		locale ? toDefaultLocaleId(doc.id, locale) : doc.id;
 	if (include) {
-		docs = docs.filter((doc) => micromatch.isMatch(doc.id, include));
+		docs = docs.filter((doc) => micromatch.isMatch(getId(doc), include));
 	}
 	if (exclude) {
-		docs = docs.filter((doc) => !micromatch.isMatch(doc.id, exclude));
+		docs = docs.filter((doc) => !micromatch.isMatch(getId(doc), exclude));
 	}
 	const { promote, demote, pageSeparator } = starlightLllmsTxtContext;
 	/** Processes page IDs by prepending underscores to influence the sorting order. */
@@ -50,7 +58,7 @@ export async function generateLlmsTxt(
 			(promoted > -1 ? promote.length - promoted : 0) + demote.length - demoted - 1;
 		return '_'.repeat(prefixLength) + id;
 	};
-	docs.sort((a, b) => collator.compare(prioritizePages(a.id), prioritizePages(b.id)));
+	docs.sort((a, b) => collator.compare(prioritizePages(getId(a)), prioritizePages(getId(b))));
 	const segments: string[] = [];
 	for (const doc of docs) {
 		const docSegments = [`# ${doc.data.hero?.title || doc.data.title}`];

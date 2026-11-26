@@ -1,18 +1,25 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute, GetStaticPaths } from 'astro';
 import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
-import { ensureTrailingSlash, getSiteTitle } from './utils';
+import { ensureTrailingSlash, getSiteTitle, localeKeys } from './utils';
 
 // Explicitly set this to prerender so it works the same way for sites in `server` mode.
 export const prerender = true;
+
+// Used by the localized `/[locale]/llms.txt` route added by the `i18n` option.
+export const getStaticPaths = (() =>
+	localeKeys.map((locale) => ({ params: { locale } }))) satisfies GetStaticPaths;
+
 /**
  * Route that generates an introductory summary of this site for LLMs.
  */
 export const GET: APIRoute = async (context) => {
-	const title = getSiteTitle();
+	const { locale } = context.params;
+	const title = getSiteTitle(locale);
 	const description = starlightLllmsTxtContext.description
 		? `> ${starlightLllmsTxtContext.description}`
 		: '';
-	const site = new URL(ensureTrailingSlash(starlightLllmsTxtContext.base), context.site);
+	let site = new URL(ensureTrailingSlash(starlightLllmsTxtContext.base), context.site);
+	if (locale) site = new URL(`./${locale}/`, site);
 	const llmsFullLink = new URL('./llms-full.txt', site);
 	const llmsSmallLink = new URL('./llms-small.txt', site);
 
@@ -24,8 +31,8 @@ export const GET: APIRoute = async (context) => {
 	segments.push(`## Documentation Sets`);
 	segments.push(
 		[
-			`- [Abridged documentation](${llmsSmallLink}): a compact version of the documentation for ${getSiteTitle()}, with non-essential content removed`,
-			`- [Complete documentation](${llmsFullLink}): the full documentation for ${getSiteTitle()}`,
+			`- [Abridged documentation](${llmsSmallLink}): a compact version of the documentation for ${title}, with non-essential content removed`,
+			`- [Complete documentation](${llmsFullLink}): the full documentation for ${title}`,
 			...starlightLllmsTxtContext.customSets.map(
 				({ label, description, slug }) =>
 					`- [${label}](${new URL(`./_llms-txt/${slug}.txt`, site)})` +
